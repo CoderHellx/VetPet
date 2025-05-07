@@ -105,12 +105,12 @@
             <ImageButton
                 android:id="@+id/AddingPetButton"
                 android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:contentDescription="pet add"
+                android:layout_height="80dp"
+                android:layout_marginBottom="100dp"
                 android:background="@drawable/plus"
+                android:contentDescription="pet add"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-              />
+                app:layout_constraintTop_toTopOf="parent" />
 
         </LinearLayout>
     </HorizontalScrollView>
