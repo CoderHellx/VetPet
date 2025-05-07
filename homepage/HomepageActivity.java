@@ -97,9 +97,8 @@ public class HomepageActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent();
-               // i.setClass(getApplicationContext(), className.class);
-               // startActivity(i);
-               //RONYA DOLDURACAK USER BUTTON
+               i.setClass(getApplicationContext(), UserProfileActivity.class);
+               startActivity(i);
             }
         });
 
