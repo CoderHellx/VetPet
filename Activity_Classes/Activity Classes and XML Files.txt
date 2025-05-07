@@ -1,1 +1,0 @@
-Put both Activity classes and XML files in this folder
