@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/customPink">
+
+
+    <ImageButton
+        android:id="@+id/back"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/pinkLight"
+        android:contentDescription="@string/desc_return"
+        app:srcCompat="@drawable/baseline_arrow_back_24"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/view_adoption_ticket"
+        android:textColor="@color/pinkLight"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/back"/>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollViewCategories"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/back"
+        app:layout_constraintVertical_bias="1.0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+
+            <Button
+                android:id="@+id/btnCat"
+                style="@style/CategoryButton"
+                android:backgroundTint="@color/pinkLight"
+                android:text="@string/cat"
+                app:strokeColor="@color/white"
+                app:strokeWidth="3dp" />
+
+            <Button
+                android:id="@+id/btnDog"
+                style="@style/CategoryButton"
+                android:backgroundTint="@color/purpleLight"
+                android:text="@string/dog"
+                app:strokeColor="@color/white"
+                app:strokeWidth="3dp" />
+
+            <Button
+                android:id="@+id/btnRabbit"
+                style="@style/CategoryButton"
+                android:backgroundTint="@color/purpleDark"
+                android:text="@string/rabbit"
+                app:strokeColor="@color/white"
+                app:strokeWidth="3dp" />
+
+            <Button
+                android:id="@+id/btnBird"
+                style="@style/CategoryButton"
+                android:backgroundTint="@color/pinkLight"
+                android:text="@string/bird"
+                app:strokeColor="@color/white"
+                app:strokeWidth="3dp"/>
+
+            <Button
+                android:id="@+id/btnHamster"
+                style="@style/CategoryButton"
+                android:backgroundTint="@color/purpleLight"
+                android:text="@string/hamster"
+                app:strokeColor="@color/white"
+                app:strokeWidth="3dp"/>
+
+            <Button
+                android:id="@+id/btnFish"
+                style="@style/CategoryButton"
+                android:backgroundTint="@color/purpleDark"
+                android:text="@string/fish"
+                app:strokeColor="@color/white"
+                app:strokeWidth="3dp"/>
+
+            <Button
+                android:id="@+id/btnTurtle"
+                style="@style/CategoryButton"
+                android:backgroundTint="@color/pinkLight"
+                android:text="@string/turtle"
+                app:strokeColor="@color/white"
+                app:strokeWidth="3dp"/>
+
+            <Button
+                android:id="@+id/btnOther"
+                style="@style/CategoryButton"
+                android:backgroundTint="@color/purpleDark"
+                android:text="@string/other"
+                app:strokeColor="@color/white"
+                app:strokeWidth="3dp"/>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

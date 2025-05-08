@@ -1,0 +1,40 @@
+<resources>
+    <string name="desc_return">return previous page</string>
+    <string name="adoption">adoption</string>
+    <string name="caregiving">caregiving</string>
+    <string name="app_name">VetPet</string>
+    <string name="button">Button</string>
+    <string name="hf">Button</string>
+    <string name="view_caregiving_ticket">VIEW CAREGIVING REQUESTS</string>
+    <string name="create_caregiving_ticket">POST CAREGIVING REQUEST</string>
+    <string name="view_adoption_ticket">VIEW ADOPTION TICKET</string>
+    <string name="create_adoption_ticket">CREATE ADOPTION TICKET</string>
+    <string name="create_ticket">CREATE TICKET</string>
+    <string name="post_request">POST REQUEST</string>
+    <string name="select_a_pet">Select a Pet</string>
+    <string name="additional_information_to_share">Additional Information To Share</string>
+    <string name="starting_date">Starting Date</string>
+    <string name="ending_date">Ending Date</string>
+    <string name="starting_time">Starting Time</string>
+    <string name="ending_time">Ending Time</string>
+    <string name="city">city</string>
+    <string name="age">age</string>
+    <string name="sex">sex</string>
+    <string name="cat">CAT</string>
+    <string name="dog">DOG</string>
+    <string name="fish">FISH</string>
+    <string name="turtle">TURTLE</string>
+    <string name="other">OTHER</string>
+    <string name="rabbit">RABBIT</string>
+    <string name="bird">BIRD</string>
+    <string name="hamster">hamster</string>,
+    <string name="returnText">return</string>
+    <string name="send_message_request">Send Message Request</string>
+    <string name="apply_for_caregiving">Apply for Caregiving</string>,
+    <string name="apply_for_adopting">Apply for Adopting</string>
+    <string name="type">Type…</string>
+    <string name="dd_mm_yyyy">dd/mm/yyyy</string>
+
+</resources>
+
+

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/customPink"
+    android:padding="16dp">
+
+
+    <ImageButton
+        android:id="@+id/profile"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="30dp"
+        android:adjustViewBounds="true"
+        android:backgroundTint="@color/pinkLight"
+        android:contentDescription="profile settings"
+        android:scaleType="centerCrop"
+        android:src="@drawable/user"
+        android:tintMode="src_in"
+        app:cornerRadius="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/white" />
+
+    <Button
+        android:id="@+id/petsIPetSit"
+        android:backgroundTint="@color/pinkLight"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="100dp"
+        android:text="Pets I Pet Sit"
+        android:textStyle="bold"
+        app:cornerRadius="8dp"
+        app:strokeColor="@color/white"
+        app:strokeWidth="3dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <Button
+        android:id="@+id/RankCaregivers"
+        android:backgroundTint="@color/pinkLight"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="100dp"
+        android:text="Rank Caregivers"
+        android:textStyle="bold"
+        app:cornerRadius="8dp"
+        app:strokeColor="@color/white"
+        app:strokeWidth="3dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/petsIPetSit"
+        />
+
+    <ImageButton
+        android:id="@+id/notification"
+        android:src="@drawable/baseline_circle_notifications_24"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true"
+        android:tintMode="src_in"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="320dp"
+        android:layout_marginTop="45dp"
+        android:backgroundTint="@color/pinkLight"
+        android:contentDescription="notification"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="@color/white"
+        app:strokeWidth="3dp"
+        app:tint="@color/white" />
+
+    <TextView
+        android:id="@+id/Pets"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Pets"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profile" />
+
+
+    <HorizontalScrollView
+        android:id="@+id/scrollPets"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="16dp"
+        android:overScrollMode="always"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/Pets">
+
+        <LinearLayout
+            android:id="@+id/llPets"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <ImageButton
+                android:id="@+id/AddingPetButton"
+                android:layout_width="100dp"
+                android:layout_height="80dp"
+                android:layout_marginBottom="100dp"
+                android:background="@drawable/plus"
+                android:contentDescription="pet add"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+
+    <Button
+        android:id="@+id/adoption"
+        style="@style/Widget.Material3.Button"
+        android:layout_width="0dp"
+        android:layout_height="190dp"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="@color/pinkLight"
+        android:text="ADOPTION"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:cornerRadius="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scrollPets"
+        app:strokeColor="@color/white"
+        app:strokeWidth="3dp" />
+
+
+    <Button
+        android:id="@+id/caregiving"
+        style="@style/Widget.Material3.Button"
+        android:layout_width="0dp"
+        android:layout_height="190dp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/purpleLight"
+        android:text="CAREGIVING"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:cornerRadius="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/adoption"
+        app:strokeColor="@color/white"
+        app:strokeWidth="3dp" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
