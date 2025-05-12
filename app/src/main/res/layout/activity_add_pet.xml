@@ -1,20 +1,26 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="#F8D7E8">
 
-    <LinearLayout android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:orientation="vertical"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/customPink"
+        android:orientation="vertical"
         android:padding="24dp">
 
         <!-- Cancel Button -->
         <Button
             android:id="@+id/buttonCancel"
-            android:text="Cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:backgroundTint="#E6A4B4"
-            android:textColor="#FFFFFF" />
+            android:backgroundTint="@color/pinkLight"
+            android:text="Cancel"
+            android:textColor="#FFFFFF"
+            app:strokeColor="@color/white"
+            app:strokeWidth="3dp" />
 
         <!-- Pet Image -->
         <FrameLayout
@@ -29,9 +35,9 @@
                 android:id="@+id/imagePet"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:contentDescription="Pet image"
                 android:scaleType="centerCrop"
-                android:src="@android:drawable/ic_menu_camera"
-                android:contentDescription="Pet image" />
+                android:src="@android:drawable/ic_menu_camera" />
         </FrameLayout>
 
 
@@ -39,24 +45,24 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/labelType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
                 android:text="Type"
-                android:textSize="14sp"
                 android:textColor="#444444"
-                android:layout_marginBottom="4dp" />
+                android:textSize="14sp" />
 
             <Spinner
                 android:id="@+id/inputType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:entries="@array/pet_type_options"
                 android:background="@drawable/edittext_rounded_background"
+                android:entries="@array/pet_type_options"
                 android:padding="8dp" />
         </LinearLayout>
 
@@ -65,27 +71,27 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
 
             <!-- Label above the input -->
             <TextView
                 android:id="@+id/labelName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
                 android:text="Name"
-                android:textSize="14sp"
                 android:textColor="#444444"
-                android:layout_marginBottom="4dp" />
+                android:textSize="14sp" />
 
             <!-- Input field -->
             <EditText
                 android:id="@+id/inputName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/edittext_rounded_background"
                 android:hint="Enter name"
                 android:padding="12dp"
-                android:background="@drawable/edittext_rounded_background"
                 android:textColor="#000000"
                 android:textColorHint="#888888" />
         </LinearLayout>
@@ -94,35 +100,35 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="16dp"
-            android:weightSum="2"
             android:dividerPadding="8dp"
-            android:showDividers="middle">
+            android:orientation="horizontal"
+            android:showDividers="middle"
+            android:weightSum="2">
 
             <!-- Birthday Field -->
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginEnd="8dp">
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/labelBirthday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
                     android:text="Birthday"
-                    android:textSize="14sp"
                     android:textColor="#444444"
-                    android:layout_marginBottom="4dp" />
+                    android:textSize="14sp" />
 
                 <EditText
                     android:id="@+id/inputBirthday"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="dd/mm/yyyy"
                     android:background="@drawable/edittext_rounded_background"
+                    android:hint="dd/mm/yyyy"
                     android:padding="12dp"
                     android:textColor="#000000"
                     android:textColorHint="#888888" />
@@ -131,26 +137,26 @@
             <!-- Gender Field -->
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginStart="8dp">
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/labelGender"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
                     android:text="Gender"
-                    android:textSize="14sp"
                     android:textColor="#444444"
-                    android:layout_marginBottom="4dp" />
+                    android:textSize="14sp" />
 
                 <Spinner
                     android:id="@+id/inputGender"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:entries="@array/gender_options"
                     android:background="@drawable/edittext_rounded_background"
+                    android:entries="@array/gender_options"
                     android:padding="8dp" />
             </LinearLayout>
         </LinearLayout>
@@ -160,26 +166,26 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/labelInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
                 android:text="Additional Information"
-                android:textSize="14sp"
                 android:textColor="#444444"
-                android:layout_marginBottom="4dp" />
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/inputInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minLines="3"
-                android:gravity="top"
-                android:padding="12dp"
                 android:background="@drawable/edittext_rounded_background"
+                android:gravity="top"
+                android:minLines="3"
+                android:padding="12dp"
                 android:textColor="#000000"
                 android:textColorHint="#888888" />
         </LinearLayout>
@@ -188,11 +194,14 @@
         <!-- Add Pet Button -->
         <Button
             android:id="@+id/buttonAddPet"
-            android:text="ADD PET"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_marginTop="16dp"
-            android:backgroundTint="#E6A4B4"
-            android:textColor="#FFFFFF" />
+            android:backgroundTint="@color/pinkLight"
+            android:text="ADD PET"
+            android:textColor="#FFFFFF"
+            app:cornerRadius="8dp"
+            app:strokeColor="@color/white"
+            app:strokeWidth="3dp" />
     </LinearLayout>
 </ScrollView>

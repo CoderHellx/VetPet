@@ -1,33 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
-    android:background="#F8D7E8">
+    android:background="@color/customPink"
+    android:padding="24dp">
 
     <!-- Three-dot Edit Toggle Button -->
     <ImageButton
         android:id="@+id/buttonEditToggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_menu_more"
         android:background="@android:color/transparent"
         android:contentDescription="Edit"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:src="@android:drawable/ic_menu_more"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Return Button -->
     <Button
         android:id="@+id/buttonReturn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/pinkLight"
         android:text="Return"
         android:textColor="#FFFFFF"
-        android:backgroundTint="#E6A4B4"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:strokeColor="@color/white"
+        app:strokeWidth="3dp" />
 
     <!-- Pet Image (Circular) -->
     <FrameLayout
@@ -36,9 +38,9 @@
         android:layout_height="120dp"
         android:layout_marginTop="32dp"
         android:background="@drawable/circle_background"
-        app:layout_constraintTop_toBottomOf="@id/buttonReturn"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/buttonReturn">
 
         <ImageView
             android:id="@+id/imagePet"
@@ -49,78 +51,82 @@
     </FrameLayout>
 
 
-
     <!-- Pet Type -->
     <EditText
         android:id="@+id/inputType"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rounded_edittext"
+        android:enabled="false"
         android:hint="Type"
         android:inputType="text"
-        android:enabled="false"
-        android:backgroundTint="#CCCCCC"
-        app:layout_constraintTop_toBottomOf="@id/petImageFrame"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/petImageFrame" />
 
 
     <!-- Pet Name -->
+
+    <!-- Pet Birthday -->
+
+    <!-- Pet Gender -->
+
+    <!-- Additional Info -->
     <EditText
         android:id="@+id/inputName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/rounded_edittext"
+        android:enabled="false"
         android:hint="Name"
         android:inputType="text"
-        android:enabled="false"
-        android:backgroundTint="#CCCCCC"
-        app:layout_constraintTop_toBottomOf="@id/inputType"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="12dp" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inputType" />
 
-    <!-- Pet Birthday -->
     <EditText
         android:id="@+id/inputBirthday"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="157dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="52dp"
+        android:background="@drawable/rounded_edittext"
+        android:enabled="false"
         android:hint="Birthday"
         android:inputType="text"
-        android:enabled="false"
-        android:backgroundTint="#CCCCCC"
-        app:layout_constraintTop_toBottomOf="@id/inputName"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/inputGender"
-        android:layout_marginTop="12dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inputName" />
 
-    <!-- Pet Gender -->
     <EditText
         android:id="@+id/inputGender"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="157dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="52dp"
+        android:background="@drawable/rounded_edittext"
+        android:enabled="false"
         android:hint="Gender"
         android:inputType="text"
-        android:enabled="false"
-        android:backgroundTint="#CCCCCC"
-        app:layout_constraintTop_toBottomOf="@id/inputName"
-        app:layout_constraintStart_toEndOf="@id/inputBirthday"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="12dp" />
+        app:layout_constraintStart_toEndOf="@id/inputBirthday"
+        app:layout_constraintTop_toBottomOf="@id/inputName" />
 
-    <!-- Additional Info -->
     <EditText
         android:id="@+id/inputInfo"
         android:layout_width="0dp"
         android:layout_height="120dp"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/rounded_edittext"
+        android:enabled="false"
+        android:gravity="top"
         android:hint="Additional Information"
         android:inputType="textMultiLine"
-        android:gravity="top"
         android:minLines="3"
-        android:enabled="false"
-        android:backgroundTint="#CCCCCC"
-        app:layout_constraintTop_toBottomOf="@id/inputBirthday"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inputBirthday" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

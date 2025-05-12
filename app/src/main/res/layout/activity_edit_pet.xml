@@ -1,24 +1,38 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8D7E8">
+    android:background="@color/customPink">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:padding="24dp">
 
         <!-- Pet Image -->
+        <Button
+            android:id="@+id/buttonCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#E6A4B4"
+            android:text="Cancel"
+            android:textColor="#FFFFFF"
+            app:cornerRadius="8dp"
+            app:strokeColor="@color/white"
+            app:strokeWidth="3dp" />
+
         <ImageView
             android:id="@+id/imagePet"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_gravity="center"
             android:background="@drawable/circle_background"
-            android:src="@android:drawable/ic_menu_camera"
+            android:contentDescription="Pet image"
             android:scaleType="centerCrop"
-            android:contentDescription="Pet image" />
+            android:src="@android:drawable/ic_menu_camera" />
 
 
         <!-- Type -->
@@ -26,46 +40,46 @@
             android:id="@+id/inputType"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Type"
-            android:inputType="text"
+            android:layout_marginTop="12dp"
             android:backgroundTint="#CCCCCC"
-            android:layout_marginTop="12dp" />
+            android:hint="Type"
+            android:inputType="text" />
 
         <!-- Name -->
         <EditText
             android:id="@+id/inputName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name"
-            android:inputType="text"
+            android:layout_marginTop="12dp"
             android:backgroundTint="#CCCCCC"
-            android:layout_marginTop="12dp" />
+            android:hint="Name"
+            android:inputType="text" />
 
         <!-- Birthday & Gender in Row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="12dp">
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
 
             <EditText
                 android:id="@+id/inputBirthday"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="#CCCCCC"
                 android:hint="Birthday"
-                android:inputType="text"
-                android:backgroundTint="#CCCCCC" />
+                android:inputType="text" />
 
             <EditText
                 android:id="@+id/inputGender"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:hint="Sex"
-                android:inputType="text"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
                 android:backgroundTint="#CCCCCC"
-                android:layout_marginStart="12dp" />
+                android:hint="Sex"
+                android:inputType="text" />
         </LinearLayout>
 
         <!-- Info -->
@@ -73,40 +87,37 @@
             android:id="@+id/inputInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="#CCCCCC"
+            android:gravity="top"
             android:hint="Additional Information"
             android:inputType="textMultiLine"
-            android:minLines="3"
-            android:gravity="top"
-            android:backgroundTint="#CCCCCC"
-            android:layout_marginTop="12dp" />
+            android:minLines="3" />
 
         <!-- Buttons -->
         <Button
             android:id="@+id/buttonDelete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/pinkLight"
             android:text="DELETE PET"
-            android:backgroundTint="#E6A4B4"
             android:textColor="#FFFFFF"
-            android:layout_marginTop="16dp" />
+            app:cornerRadius="8dp"
+            app:strokeColor="@color/white"
+            app:strokeWidth="3dp" />
 
         <Button
             android:id="@+id/buttonSave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/pinkLight"
             android:text="SAVE CHANGES"
-            android:backgroundTint="#E6A4B4"
             android:textColor="#FFFFFF"
-            android:layout_marginTop="8dp" />
+            app:cornerRadius="8dp"
+            app:strokeColor="@color/white"
+            app:strokeWidth="3dp" />
 
-        <Button
-            android:id="@+id/buttonCancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cancel"
-            android:backgroundTint="#E6A4B4"
-            android:textColor="#FFFFFF"
-            android:layout_gravity="end"
-            android:layout_marginTop="8dp" />
     </LinearLayout>
 </ScrollView>
