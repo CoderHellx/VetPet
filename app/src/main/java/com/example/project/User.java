@@ -3,13 +3,13 @@ package com.example.project;
 import java.util.ArrayList;
 
 public class User {
-    String userId, name, surname, email, country, city;
+    String userId, name, surname, email, password, country, city;
     ArrayList<Pet> pets;
     ArrayList<Pet> petsIPetSit;
 
     double averageRating = 0;
     int totalRatings = 0;
-    public User(String userId, String name, String surname, String email){
+    public User(String userId, String name, String surname, String email){ //add password and change the User constructors that are there!!!!!
         this.userId = userId;
         this.name = name;
         this.surname = surname;

@@ -20,7 +20,7 @@ import androidx.appcompat.app.AlertDialog;
 import android.text.InputType;
 
 public class SignInActivity extends AppCompatActivity {
-
+    public User currentUser;
     private FirebaseAuth mAuth;
     private EditText emailET, passET;
     private ProgressBar progressBar;
@@ -95,6 +95,7 @@ public class SignInActivity extends AppCompatActivity {
                                 Toast.LENGTH_LONG).show();
                     }
                 });
+        //user = new User("123",); // Add Id or something
     }
 
     private void showResetPasswordDialog() {

@@ -23,9 +23,6 @@
         <activity android:name=".RatingListActivity" />
 
         <activity
-            android:name=".MainEceActivity"
-            android:exported="true" />
-        <activity
             android:name=".Notify"
             android:exported="false" />
         <activity
