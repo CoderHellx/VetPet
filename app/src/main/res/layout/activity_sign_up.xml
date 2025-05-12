@@ -88,29 +88,30 @@
         android:id="@+id/countrySpinner"
         android:layout_width="0dp"
         android:layout_height="48dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="260dp"
-        android:dropDownHeight="200dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:popupBackground="@android:color/white"
         android:prompt="@string/select_country"
-        android:spinnerMode="dropdown"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/surnameEditText"
+        app:layout_constraintEnd_toStartOf="@id/citySpinner"
         app:layout_constraintWidth_percent="0.45" />
 
     <androidx.appcompat.widget.AppCompatSpinner
         android:id="@+id/citySpinner"
         android:layout_width="0dp"
-        android:layout_height="56dp"
+        android:layout_height="48dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:dropDownHeight="200dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
         android:popupBackground="@android:color/white"
         android:prompt="@string/select_city"
-        android:spinnerMode="dropdown"
         app:layout_constraintStart_toEndOf="@id/countrySpinner"
-        app:layout_constraintTop_toBottomOf="@id/cityLabel"
+        app:layout_constraintTop_toBottomOf="@id/surnameEditText"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintWidth_percent="0.45" />
+
 
     <EditText
         android:id="@+id/emailEditText"

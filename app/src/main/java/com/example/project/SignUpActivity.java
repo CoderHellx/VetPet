@@ -3,6 +3,7 @@ package com.example.project;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -110,6 +111,9 @@ public class SignUpActivity extends AppCompatActivity {
                 }
                 citiesMap.get(country).add(city);
             }
+
+            Log.d("SPINNER_DEBUG", "Loaded countries: " + countryList.size());
+
 
         } catch (IOException e) {
             e.printStackTrace();
