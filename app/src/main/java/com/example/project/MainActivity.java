@@ -23,8 +23,6 @@ public class MainActivity extends AppCompatActivity {
             //throw new RuntimeException(e);
             System.out.println("File not found!!!");
         }
-        BufferedReader reader = new BufferedReader(is);
-
 
         Button signInBtn = findViewById(R.id.signInBtn);
         Button signUpBtn = findViewById(R.id.signUpBtn);
