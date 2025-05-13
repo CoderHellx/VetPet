@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class EditPetActivity extends AppCompatActivity {
@@ -46,7 +47,7 @@ public class EditPetActivity extends AppCompatActivity {
 
         // Get Firebase + intent
         db = FirebaseFirestore.getInstance();
-        ownerId = "owner456";//FirebaseAuth.getInstance().getCurrentUser().getUid();
+        ownerId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         pet = (Pet) getIntent().getSerializableExtra("pet");
 
         if (pet != null) {
