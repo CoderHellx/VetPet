@@ -33,6 +33,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         returnButton = findViewById(R.id.back);
 
         mAuth = FirebaseAuth.getInstance();
+
         returnButton.setOnClickListener(v -> finish());
 
         changePasswordButton.setOnClickListener(v -> changePassword());
