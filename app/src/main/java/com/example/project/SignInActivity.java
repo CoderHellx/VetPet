@@ -6,17 +6,16 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import androidx.appcompat.app.AlertDialog;
 import android.text.InputType;
 
 public class SignInActivity extends AppCompatActivity {
@@ -31,13 +30,7 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        //Back
-        findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        findViewById(R.id.back).setOnClickListener(view -> finish());
 
         emailET = findViewById(R.id.emailEditText);
         passET  = findViewById(R.id.passwordEditText);
@@ -69,24 +62,36 @@ public class SignInActivity extends AppCompatActivity {
             return;
         }
 
-        progressBar.setVisibility(android.view.View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
 
-        // Firebase Auth
         mAuth.signInWithEmailAndPassword(email, pass)
                 .addOnCompleteListener(this, task -> {
-                    progressBar.setVisibility(android.view.View.GONE);
+                    progressBar.setVisibility(View.GONE);
 
                     if (task.isSuccessful()) {
-                        Intent intent = new Intent(SignInActivity.this, HomepageActivity.class);
-                        startActivity(intent);
-                        finish();
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        Toast.makeText(this,
-                                "Welcome: " + user.getEmail(),
-                                Toast.LENGTH_SHORT).show();
+                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                        if (firebaseUser == null) {
+                            Toast.makeText(this, "Unexpected error: User is null", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
 
-                        // startActivity(new Intent(this, HomeActivity.class));
-                        finish();
+                        String uid = firebaseUser.getUid();
+
+                        FirebaseDatabaseManager dbManager = new FirebaseDatabaseManager();
+                        dbManager.fetchUserByUid(uid).addOnSuccessListener(user -> {
+                            currentUser = user;
+
+                            Toast.makeText(this, "Welcome: " + firebaseUser.getEmail(), Toast.LENGTH_SHORT).show();
+
+                            Intent intent = new Intent(SignInActivity.this, HomepageActivity.class);
+                            intent.putExtra("currentUserName", user.getName()); // Optional
+                            startActivity(intent);
+                            finish();
+
+                        }).addOnFailureListener(e -> {
+                            Toast.makeText(SignInActivity.this, "User data not found: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        });
+
                     } else {
                         Toast.makeText(this,
                                 "Sign in failed: " +
@@ -94,27 +99,9 @@ public class SignInActivity extends AppCompatActivity {
                                 Toast.LENGTH_LONG).show();
                     }
                 });
-        FirebaseUser firebaseUser = mAuth.getCurrentUser();
-        String uid = firebaseUser.getUid();
-
-        FirebaseDatabaseManager dbManager = new FirebaseDatabaseManager();
-        dbManager.fetchUserByUid(uid).addOnSuccessListener(user -> {
-            currentUser = user;
-
-            // Optionally pass currentUser to the next Activity via Intent
-            Intent intent = new Intent(SignInActivity.this, HomepageActivity.class);
-            intent.putExtra("currentUserName", user.getName()); // example
-            startActivity(intent);
-            finish();
-
-        }).addOnFailureListener(e -> {
-            Toast.makeText(SignInActivity.this, "User data not found: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        });
-
     }
 
     private void showResetPasswordDialog() {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Reset Password");
 
@@ -132,15 +119,10 @@ public class SignInActivity extends AppCompatActivity {
             mAuth.sendPasswordResetEmail(email)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            Toast.makeText(this,
-                                    "Email has been sent to you",
-                                    Toast.LENGTH_LONG).show();
+                            Toast.makeText(this, "Email has been sent to you", Toast.LENGTH_LONG).show();
                         } else {
-                            Toast
-                                    .makeText(this,
-                                            "Email could not be sent: " + task.getException().getMessage(),
-                                            Toast.LENGTH_LONG)
-                                    .show();
+                            Toast.makeText(this, "Email could not be sent: " +
+                                    task.getException().getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
         });
@@ -149,5 +131,4 @@ public class SignInActivity extends AppCompatActivity {
 
         builder.create().show();
     }
-
 }
