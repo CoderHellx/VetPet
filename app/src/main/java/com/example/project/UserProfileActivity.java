@@ -16,6 +16,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -38,6 +41,7 @@ public class UserProfileActivity extends AppCompatActivity {
     DocumentReference currentuser;
     ArrayAdapter<String> cityAdapter;
     ArrayAdapter<String> countryAdapter;
+    FirebaseAuth mAuth;
     private List<String> countryList = new ArrayList<>();
     private Map<String, List<String>> citiesMap = new HashMap<>();
 
@@ -60,9 +64,12 @@ public class UserProfileActivity extends AppCompatActivity {
         countryspinner = findViewById(R.id.countries);
         cityspinner = findViewById(R.id.cities);
         returnbutton = findViewById(R.id.back);
+        mAuth = FirebaseAuth.getInstance();
 
+        FirebaseUser user = mAuth.getCurrentUser();
+        currentuserId = user.getUid();
         currentuser = FirebaseFirestore.getInstance().collection("users").document(
-                "3");
+                currentuserId);
 
         returnbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,7 +105,6 @@ public class UserProfileActivity extends AppCompatActivity {
                         Double rank = documentSnapshot.getDouble("ranking");
                         country = documentSnapshot.getString("country");
                         city = documentSnapshot.getString("city");
-                        currentuserId = currentuser.getId();
                         namesurnameText.setText(name + " " + surname);
                         rankText.setText("" + rank);
                         nameedittext.setText(name);
@@ -165,8 +171,7 @@ public class UserProfileActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(getApplicationContext(), "Logging out", Toast.LENGTH_SHORT).show();
                         Intent i = new Intent();
-                        // TODO: 11.05.2025 activity will change
-                        i.setClass(getApplicationContext(), HomepageActivity.class);
+                        i.setClass(getApplicationContext(), MainActivity.class);
                         startActivity(i);
                     }
                 });
@@ -193,8 +198,7 @@ public class UserProfileActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Your profile has been deleted", Toast.LENGTH_SHORT).show();
                         currentuser.delete();
                         Intent i = new Intent();
-                        // TODO: 11.05.2025 activity will change
-                        i.setClass(getApplicationContext(), HomepageActivity.class);
+                        i.setClass(getApplicationContext(), MainActivity.class);
                         startActivity(i);
                     }
                 });
