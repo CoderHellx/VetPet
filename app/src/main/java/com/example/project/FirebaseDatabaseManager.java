@@ -52,8 +52,7 @@ public class FirebaseDatabaseManager {
 
     //User Save (Değişebilir)
     public Task<Void> saveUser(User user){
-        DocumentReference ref = db.collection("users").document();
-
+        DocumentReference ref = db.collection("users").document(user.getUserId());
         Map<String, Object> userData = new HashMap<>();
         userData.put("userId", user.getUserId());
         userData.put("name", user.getName());
