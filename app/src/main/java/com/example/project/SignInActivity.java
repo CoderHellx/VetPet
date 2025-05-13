@@ -6,17 +6,16 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import androidx.appcompat.app.AlertDialog;
 import android.text.InputType;
 
 public class SignInActivity extends AppCompatActivity {
@@ -31,37 +30,34 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        //Back
-        findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        // Back button
+        findViewById(R.id.back).setOnClickListener(view -> finish());
 
+        // Initialize views
         emailET = findViewById(R.id.emailEditText);
-        passET  = findViewById(R.id.passwordEditText);
+        passET = findViewById(R.id.passwordEditText);
         Button signBtn = findViewById(R.id.signInButton);
         progressBar = findViewById(R.id.progressBar);
         forgotPasswordText = findViewById(R.id.forgotPasswordText);
 
         mAuth = FirebaseAuth.getInstance();
 
+        // Set click listeners
         forgotPasswordText.setOnClickListener(v -> showResetPasswordDialog());
-
         signBtn.setOnClickListener(v -> attemptLogin());
     }
 
     private void attemptLogin() {
         String email = emailET.getText().toString().trim();
-        String pass  = passET.getText().toString().trim();
+        String pass = passET.getText().toString().trim();
 
+        // Input validation
         if (TextUtils.isEmpty(email)) {
-            emailET.setError("Email can not be empty");
+            emailET.setError("Email cannot be empty");
             return;
         }
         if (TextUtils.isEmpty(pass)) {
-            passET.setError("Password can not be empty");
+            passET.setError("Password cannot be empty");
             return;
         }
         if (pass.length() < 6) {
@@ -69,52 +65,49 @@ public class SignInActivity extends AppCompatActivity {
             return;
         }
 
-        progressBar.setVisibility(android.view.View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
 
-        // Firebase Auth
+        // Firebase authentication
         mAuth.signInWithEmailAndPassword(email, pass)
                 .addOnCompleteListener(this, task -> {
-                    progressBar.setVisibility(android.view.View.GONE);
+                    progressBar.setVisibility(View.GONE);
 
                     if (task.isSuccessful()) {
-                        Intent intent = new Intent(SignInActivity.this, HomepageActivity.class);
-                        startActivity(intent);
-                        finish();
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        Toast.makeText(this,
-                                "Welcome: " + user.getEmail(),
-                                Toast.LENGTH_SHORT).show();
-
-                        // startActivity(new Intent(this, HomeActivity.class));
-                        finish();
+                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                        if (firebaseUser != null) {
+                            fetchUserData(firebaseUser.getUid());
+                        }
                     } else {
-                        Toast.makeText(this,
-                                "Sign in failed: " +
-                                        task.getException().getMessage(),
+                        Toast.makeText(SignInActivity.this,
+                                "Sign in failed: " + task.getException().getMessage(),
                                 Toast.LENGTH_LONG).show();
                     }
                 });
-        FirebaseUser firebaseUser = mAuth.getCurrentUser();
-        String uid = firebaseUser.getUid();
+    }
 
+    private void fetchUserData(String uid) {
         FirebaseDatabaseManager dbManager = new FirebaseDatabaseManager();
-        dbManager.fetchUserByUid(uid).addOnSuccessListener(user -> {
-            currentUser = user;
+        dbManager.fetchUserByUid(uid)
+                .addOnSuccessListener(user -> {
+                    currentUser = user;
+                    Toast.makeText(SignInActivity.this,
+                            "Welcome: " + user.getEmail(),
+                            Toast.LENGTH_SHORT).show();
 
-            // Optionally pass currentUser to the next Activity via Intent
-            Intent intent = new Intent(SignInActivity.this, HomepageActivity.class);
-            intent.putExtra("currentUserName", user.getName()); // example
-            startActivity(intent);
-            finish();
-
-        }).addOnFailureListener(e -> {
-            Toast.makeText(SignInActivity.this, "User data not found: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        });
-
+                    // Start HomepageActivity only once
+                    Intent intent = new Intent(SignInActivity.this, HomepageActivity.class);
+                    intent.putExtra("currentUserName", user.getName());
+                    startActivity(intent);
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(SignInActivity.this,
+                            "User data not found: " + e.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                });
     }
 
     private void showResetPasswordDialog() {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Reset Password");
 
@@ -126,28 +119,24 @@ public class SignInActivity extends AppCompatActivity {
         builder.setPositiveButton("Send", (dialog, which) -> {
             String email = input.getText().toString().trim();
             if (email.isEmpty()) {
-                Toast.makeText(this, "Email can not be empty", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Email cannot be empty", Toast.LENGTH_SHORT).show();
                 return;
             }
             mAuth.sendPasswordResetEmail(email)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Toast.makeText(this,
-                                    "Email has been sent to you",
+                                    "Password reset email has been sent",
                                     Toast.LENGTH_LONG).show();
                         } else {
-                            Toast
-                                    .makeText(this,
-                                            "Email could not be sent: " + task.getException().getMessage(),
-                                            Toast.LENGTH_LONG)
-                                    .show();
+                            Toast.makeText(this,
+                                    "Failed to send reset email: " + task.getException().getMessage(),
+                                    Toast.LENGTH_LONG).show();
                         }
                     });
         });
 
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-
         builder.create().show();
     }
-
 }
