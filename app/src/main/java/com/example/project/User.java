@@ -3,7 +3,8 @@ package com.example.project;
 import java.util.ArrayList;
 
 public class User {
-    String userId, name, surname, email, password, country, city;
+    String userId, name, surname, email, country, city;
+    String password = "123456";
     ArrayList<Pet> pets;
     ArrayList<Pet> petsIPetSit;
 
@@ -28,6 +29,7 @@ public class User {
     public ArrayList<Pet> getPetsIPetSit(){return petsIPetSit;}
     public void setUserId(String userId){this.userId = userId;}
     public String getName(){return this.name;}
+    public String getPassword(){return this.password;}
     public String getSurname(){return this.surname;}
     public String getEmail(){return this.email;}
     public void setName(String name){this.name = name;}

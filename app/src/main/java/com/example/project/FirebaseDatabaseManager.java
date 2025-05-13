@@ -60,6 +60,7 @@ public class FirebaseDatabaseManager {
         userData.put("name", user.getName());
         userData.put("surname", user.getSurname());
         userData.put("email", user.getEmail());
+        userData.put("password",user.getPassword());
 
         return ref.set(userData);
     }

@@ -27,9 +27,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 public class SignUpActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+
+    private FirebaseDatabaseManager db = new FirebaseDatabaseManager();
     private EditText emailET, passET;
     private ProgressBar progressBar;
 
@@ -38,6 +43,9 @@ public class SignUpActivity extends AppCompatActivity {
 
     private List<String> countryList = new ArrayList<>();
     private Map<String, List<String>> citiesMap = new HashMap<>();
+
+    private EditText nameET, surnameET;
+
 
 
     @Override
@@ -89,9 +97,14 @@ public class SignUpActivity extends AppCompatActivity {
         passET  = findViewById(R.id.passwordEditText);
         progressBar = findViewById(R.id.progressBar);
 
+        nameET = findViewById(R.id.nameEditText);
+        surnameET = findViewById(R.id.surnameEditText);
+
+
         Button signUpBtn = findViewById(R.id.signUpButton);
         signUpBtn.setOnClickListener(v -> attemptSignUp());
     }
+
 
     private void loadCitiesFromCSV() {
         try (BufferedReader reader = new BufferedReader(
@@ -124,6 +137,14 @@ public class SignUpActivity extends AppCompatActivity {
         String email = emailET.getText().toString().trim();
         String pass  = passET.getText().toString().trim();
 
+        String selectedCountry = spinnerCountry.getSelectedItem() != null
+                ? spinnerCountry.getSelectedItem().toString()
+                : "Unknown";
+
+        String selectedCity = spinnerCity.getSelectedItem() != null
+                ? spinnerCity.getSelectedItem().toString()
+                : "Unknown";
+
         if (TextUtils.isEmpty(email)) {
             emailET.setError("Email can not be empty");
             return;
@@ -141,27 +162,39 @@ public class SignUpActivity extends AppCompatActivity {
 
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
-                        user.sendEmailVerification()
-                                .addOnCompleteListener(this, verifyTask -> {
-                                    if (verifyTask.isSuccessful()) {
-                                        Toast.makeText(this,
-                                                "Verification email has been sent: " + user.getEmail(),
-                                                Toast.LENGTH_LONG).show();
-                                        // ➋ Sign-In sayfasına dön
-                                        finish();
-                                    } else {
-                                        Toast.makeText(this,
-                                                "Verification email could not be sent: " +
-                                                        verifyTask.getException().getMessage(),
-                                                Toast.LENGTH_LONG).show();
-                                    }
-                                });
+
+                        if (user != null) {
+                            //userID ve password e bakılacak
+                            db.saveUser(new User(user.getUid(), nameET.getText().toString(), surnameET.getText().toString(), emailET.getText().toString()));
+
+                            user.sendEmailVerification()
+                                    .addOnCompleteListener(this, verifyTask -> {
+                                        if (verifyTask.isSuccessful()) {
+                                            Toast.makeText(this,
+                                                    "Verification email has been sent: " + user.getEmail(),
+                                                    Toast.LENGTH_LONG).show();
+                                            finish();
+                                        } else {
+                                            Toast.makeText(this,
+                                                    "Verification email could not be sent: " +
+                                                            verifyTask.getException().getMessage(),
+                                                    Toast.LENGTH_LONG).show();
+                                            Log.e("EMAIL_VERIFICATION", "Failed: ", verifyTask.getException());
+                                        }
+                                    });
+                        } else {
+                            Log.e("SIGNUP_FLOW", "FirebaseUser is null after successful task.");
+                            Toast.makeText(this, "Unexpected error: user is null", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
+                        Log.e("FIREBASE_AUTH", "Sign-up failed: ", task.getException());
                         Toast.makeText(this,
-                                "Sign up failed: " +
-                                        task.getException().getMessage(),
+                                "Sign up failed: " + (task.getException() != null ? task.getException().getMessage() : "Unknown error"),
                                 Toast.LENGTH_LONG).show();
+                        Log.e("FIREBASE_AUTH", "Sign up failed: ", task.getException());
+
                     }
+
                 });
     }
 }
