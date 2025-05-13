@@ -47,8 +47,15 @@ public class EditPetActivity extends AppCompatActivity {
 
         // Get Firebase + intent
         db = FirebaseFirestore.getInstance();
-        ownerId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        ownerId = SignInActivity.currentUser.userId;
         pet = (Pet) getIntent().getSerializableExtra("pet");
+
+        if (pet == null) {
+            Toast.makeText(this, "Pet data missing", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
 
         if (pet != null) {
             int typePosition = typeAdapter.getPosition(pet.getSpecies());

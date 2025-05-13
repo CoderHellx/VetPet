@@ -93,7 +93,7 @@ public class AddPetActivity extends AppCompatActivity {
     }
 
     private void uploadImageAndSavePet() {
-        String ownerId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String ownerId = SignInActivity.currentUser.userId;
         String petId = UUID.randomUUID().toString();
 
         if (selectedImageUri == null) {
@@ -115,6 +115,10 @@ public class AddPetActivity extends AppCompatActivity {
                     .document(petId)
                     .set(pet)
                     .addOnSuccessListener(aVoid -> {
+                        if (SignInActivity.currentUser != null) {
+                            SignInActivity.currentUser.addPetToPets(pet);
+                        }
+
                         Toast.makeText(AddPetActivity.this, "Pet added successfully!", Toast.LENGTH_SHORT).show();
                         setResult(RESULT_OK);
                         finish();
@@ -122,6 +126,7 @@ public class AddPetActivity extends AppCompatActivity {
                     .addOnFailureListener(e ->
                             Toast.makeText(AddPetActivity.this, "Failed to add pet: " + e.getMessage(), Toast.LENGTH_LONG).show()
                     );
+
 
         } else {
             // Image selected, proceed with upload
