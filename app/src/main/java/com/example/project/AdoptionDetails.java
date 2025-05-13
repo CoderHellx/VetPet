@@ -14,7 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class AdoptionDetails extends AppCompatActivity {
 
-    TextView petName, petType, petAge, petSex, petDetails, username;
+    TextView petName, petType, petAge, petSex, petDetails, username, email;
 
     ImageView userImg, petImg;
 
@@ -43,6 +43,7 @@ public class AdoptionDetails extends AppCompatActivity {
         petSex = findViewById(R.id.pet_gender);
         petDetails = findViewById(R.id.pet_details);
         username = findViewById(R.id.username);
+        email = findViewById(R.id.email);
 
         apply = findViewById(R.id.apply);
 
@@ -73,6 +74,7 @@ public class AdoptionDetails extends AppCompatActivity {
         petSex.setText(getIntent().getStringExtra("sex"));
         petDetails.setText(getIntent().getStringExtra("details"));
         username.setText(getIntent().getStringExtra("username"));
+        email.setText(getIntent().getStringExtra("email"));
 
         Glide.with(this)
                 .load(getIntent().getStringExtra("pet_img"))

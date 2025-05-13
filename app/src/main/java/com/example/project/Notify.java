@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -26,10 +27,14 @@ public class Notify extends AppCompatActivity {
     NotifyAdapter adapter;
     RecyclerView recyclerView;
 
+    FirebaseAuth auth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notify);
+
+        auth = FirebaseAuth.getInstance();
 
         //Back
         findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
@@ -43,7 +48,7 @@ public class Notify extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler_view_notify);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        String userId = "123"; //User.getId();
+        String userId = auth.getCurrentUser().getUid();
 
         db.fetchNotifications(userId).addOnSuccessListener(notifications -> {
             notifyArray.clear();
@@ -77,7 +82,7 @@ public class Notify extends AppCompatActivity {
 
             holder.username.setText(notification.userId);
 
-            String userId = "123"; //User.getId();
+            String userId = auth.getCurrentUser().getUid();
 
             holder.accept.setOnClickListener(v -> {
                 db.setTicket(notification.applicationId, true, userId);

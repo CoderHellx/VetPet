@@ -59,6 +59,7 @@ public class FirebaseDatabaseManager {
         userData.put("surname", user.getSurname());
         userData.put("email", user.getEmail());
         userData.put("password",user.getPassword());
+        userData.put("country",user.getCountry());
 
         return ref.set(userData);
     }
@@ -341,8 +342,9 @@ public class FirebaseDatabaseManager {
                         String surname = document.getString("surname");
                         String email = document.getString("email");
                         String password = document.getString("password");
+                        String country = document.getString("country");
 
-                        User user = new User(uid, name, surname, email);
+                        User user = new User(uid, name, surname, email, country);
                         taskSource.setResult(user);
                     } else {
                         taskSource.setException(new Exception("User not found"));

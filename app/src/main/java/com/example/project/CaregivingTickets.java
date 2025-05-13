@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.text.ParseException;
@@ -60,19 +62,25 @@ public class CaregivingTickets extends AppCompatActivity {
 
         type = getIntent().getStringExtra("type");
 
-        country = "Turkey";
+        Utils.getCurrentUser(new Utils.CurrentUserCallback() {
+            @Override
+            public void onUserReady(User user) {
+                country = user.getCountry();
 
-        cityList.add("All");
+                cityList.add("All");
 
-        Utils.getCitiesFromApi(country, getApplicationContext(), cities -> {
-            cityList.addAll(cities);
-            runOnUiThread(() -> {
-                setupFilter(cityDropdown, cityDropdownText, cityList, selected -> {
-                    selectedCity = selected;
-                    cityDropdownText.setText(selected);
-                    applyAllFilters();
+                Utils.getCitiesFromApi(country, getApplicationContext(), cities -> {
+                    cityList.addAll(cities);
+                    runOnUiThread(() -> {
+                        setupFilter(cityDropdown, cityDropdownText, cityList, selected -> {
+                            selectedCity = selected;
+                            cityDropdownText.setText(selected);
+                            applyAllFilters();
+                        });
+                    });
                 });
-            });
+
+            }
         });
 
         findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
@@ -169,6 +177,7 @@ public class CaregivingTickets extends AppCompatActivity {
         int age = doc.getLong("petAge").intValue();
         String imageUrl = doc.getString("petImageUrl");
         String ticketId = doc.getString("ticketId");
+        String ownerId = doc.getString("ownerId");
 
         String startingDate = doc.getString("startingDate");
         String startingHour = doc.getString("startingTimeHour");
@@ -189,7 +198,7 @@ public class CaregivingTickets extends AppCompatActivity {
         ticket.setPet(pet);
         ticket.setCity(city);
         ticket.setDetails(details);
-        ticket.setOwnerId("123"); //User.getId();
+        ticket.setOwnerId(ownerId);
         ticket.setStartingDate(startingDate, startingHour, startingMinute);
         ticket.setEndingDate(endingDate, endingHour, endingMinute);
 
@@ -367,18 +376,24 @@ public class CaregivingTickets extends AppCompatActivity {
                     .into(holder.pet_image);
 
             holder.ticket.setOnClickListener(view -> {
-                Intent i = new Intent(getApplicationContext(), CaregivingDetails.class);
-                i.putExtra("ticketId", t.getTicketId());
-                i.putExtra("type", t.getPet().getSpecies());
-                i.putExtra("name", t.getPet().getName());
-                i.putExtra("age", t.getPet().getAge() + "");
-                i.putExtra("sex", t.getPet().getGender());
-                i.putExtra("details", t.getDetails());
-                i.putExtra("ownerId", t.getOwnerId());
-                i.putExtra("pet_img", t.getPet().getImageUrl());
-                i.putExtra("username", "John Brown");
-                i.putExtra("user_img", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD-atDw_q1EzrHxgTLQY7cNz1xpi0rcQFjHA&s");
-                startActivity(i);
+                db.fetchUserByUid(t.ownerId).addOnSuccessListener(new OnSuccessListener<User>() {
+                    @Override
+                    public void onSuccess(User user) {
+                        Intent i = new Intent(getApplicationContext(), CaregivingDetails.class);
+                        i.putExtra("ticketId", t.getTicketId());
+                        i.putExtra("type", t.getPet().getSpecies());
+                        i.putExtra("name", t.getPet().getName());
+                        i.putExtra("age", t.getPet().getAge() + "");
+                        i.putExtra("sex", t.getPet().getGender());
+                        i.putExtra("details", t.getDetails());
+                        i.putExtra("ownerId", t.getOwnerId());
+                        i.putExtra("pet_img", t.getPet().getImageUrl());
+                        i.putExtra("username", user.getName() + " " + user.getSurname());
+                        i.putExtra("email", user.getEmail());
+                        i.putExtra("user_img", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD-atDw_q1EzrHxgTLQY7cNz1xpi0rcQFjHA&s");
+                        startActivity(i);
+                    }
+                });
             });
         }
 

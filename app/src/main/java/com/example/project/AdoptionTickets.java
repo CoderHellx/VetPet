@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -58,21 +59,33 @@ public class AdoptionTickets extends AppCompatActivity {
 
         type = getIntent().getStringExtra("type");
 
-        country = "Turkey";
+        Utils.getCurrentUser(new Utils.CurrentUserCallback() {
+            @Override
+            public void onUserReady(User user) {
 
-        cityList.add("All");
-
-        Utils.getCitiesFromApi(country, getApplicationContext(), cities -> {
-            cityList.addAll(cities);
-            runOnUiThread(() -> {
-                setupFilter(cityDropdown, cityDropdownText, cityList, selected -> {
-                    selectedCity = selected;
-                    cityDropdownText.setText(selected);
-                    applyAllFilters();
-                });
-            });
+            }
         });
 
+        Utils.getCurrentUser(new Utils.CurrentUserCallback() {
+            @Override
+            public void onUserReady(User user) {
+                country = user.getCountry();
+
+                cityList.add("All");
+
+                Utils.getCitiesFromApi(country, getApplicationContext(), cities -> {
+                    cityList.addAll(cities);
+                    runOnUiThread(() -> {
+                        setupFilter(cityDropdown, cityDropdownText, cityList, selected -> {
+                            selectedCity = selected;
+                            cityDropdownText.setText(selected);
+                            applyAllFilters();
+                        });
+                    });
+                });
+
+            }
+        });
 
         findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,6 +159,7 @@ public class AdoptionTickets extends AppCompatActivity {
         int age = doc.getLong("petAge").intValue();
         String imageUrl = doc.getString("petImageUrl");
         String ticketId = doc.getString("ticketId");
+        String ownerId = doc.getString("ownerId");
 
         Ticket ticket = new Ticket();
         ticket.setTicketId(ticketId);
@@ -158,7 +172,7 @@ public class AdoptionTickets extends AppCompatActivity {
         ticket.setPet(pet);
         ticket.setCity(city);
         ticket.setDetails(details);
-        ticket.setOwnerId("123"); //User.getId();
+        ticket.setOwnerId(ownerId);
 
         ticketsArrayList.add(ticket);
         originalList.add(ticket);
@@ -299,18 +313,24 @@ public class AdoptionTickets extends AppCompatActivity {
                     .into(holder.pet_image);
 
             holder.ticket.setOnClickListener(view -> {
-                Intent i = new Intent(getApplicationContext(), AdoptionDetails.class);
-                i.putExtra("ticketId", t.getTicketId());
-                i.putExtra("type", t.getPet().getSpecies());
-                i.putExtra("name", t.getPet().getName());
-                i.putExtra("age", t.getPet().getAge() + "");
-                i.putExtra("sex", t.getPet().getGender());
-                i.putExtra("details", t.getDetails());
-                i.putExtra("ownerId", t.getOwnerId());
-                i.putExtra("pet_img", t.getPet().getImageUrl());
-                i.putExtra("username", "John Brown");
-                i.putExtra("user_img", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD-atDw_q1EzrHxgTLQY7cNz1xpi0rcQFjHA&s");
-                startActivity(i);
+                db.fetchUserByUid(t.getOwnerId()).addOnSuccessListener(new OnSuccessListener<User>() {
+                    @Override
+                    public void onSuccess(User user) {
+                        Intent i = new Intent(getApplicationContext(), CaregivingDetails.class);
+                        i.putExtra("ticketId", t.getTicketId());
+                        i.putExtra("type", t.getPet().getSpecies());
+                        i.putExtra("name", t.getPet().getName());
+                        i.putExtra("age", t.getPet().getAge() + "");
+                        i.putExtra("sex", t.getPet().getGender());
+                        i.putExtra("details", t.getDetails());
+                        i.putExtra("ownerId", t.getOwnerId());
+                        i.putExtra("pet_img", t.getPet().getImageUrl());
+                        i.putExtra("username", user.getName() + " " + user.getSurname());
+                        i.putExtra("email", user.getEmail());
+                        i.putExtra("user_img", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD-atDw_q1EzrHxgTLQY7cNz1xpi0rcQFjHA&s");
+                        startActivity(i);
+                    }
+                });
             });
         }
 

@@ -47,7 +47,7 @@ public class EditPetActivity extends AppCompatActivity {
 
         // Get Firebase + intent
         db = FirebaseFirestore.getInstance();
-        ownerId = SignInActivity.currentUser.userId;
+        ownerId = Utils.currentUser.userId;
         pet = (Pet) getIntent().getSerializableExtra("pet");
 
         if (pet == null) {

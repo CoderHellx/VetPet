@@ -46,6 +46,8 @@ public class SignUpActivity extends AppCompatActivity {
 
     private EditText nameET, surnameET;
 
+    String selectedCountry;
+
 
 
     @Override
@@ -76,7 +78,7 @@ public class SignUpActivity extends AppCompatActivity {
         spinnerCountry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                String selectedCountry = countryList.get(pos);
+                selectedCountry = countryList.get(pos);
                 List<String> cityList = citiesMap.get(selectedCountry);
                 if (cityList == null) cityList = new ArrayList<>();
 
@@ -165,7 +167,9 @@ public class SignUpActivity extends AppCompatActivity {
 
                         if (user != null) {
                             //userID ve password e bakılacak
-                            db.saveUser(new User(user.getUid(), nameET.getText().toString(), surnameET.getText().toString(), emailET.getText().toString()))
+                            User u = new User(user.getUid(), nameET.getText().toString(), surnameET.getText().toString(), emailET.getText().toString(), selectedCountry);
+                            u.setPassword(pass);
+                            db.saveUser(u)
                                     .addOnSuccessListener(unused -> {
                                         Log.d("SAVE_USER", "User saved successfully!");
                                     })

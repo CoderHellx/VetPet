@@ -139,11 +139,20 @@ public class HomepageActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-        if(!SignInActivity.currentUser.getPets().isEmpty()){
-            displayPets(SignInActivity.currentUser.getPets());
-        }
 
-
+        Utils.getCurrentUser(new Utils.CurrentUserCallback() {
+            @Override
+            public void onUserReady(User user) {
+                user.getPets(new User.PetsCallback() {
+                    @Override
+                    public void onPetsFetched(ArrayList<Pet> pets) {
+                        if(!pets.isEmpty()) {
+                            displayPets(pets);
+                        }
+                    }
+                });
+            }
+        });
 
     }
 

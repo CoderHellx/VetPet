@@ -9,9 +9,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.project.CaregiverRatingAdapter;
 import com.example.project.CaregivingTicket;
 import com.example.project.R;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,20 +45,32 @@ public class RatingListActivity extends AppCompatActivity {
     }
 
     private void loadTickets() {
-        db.collection("caregivingTickets")
+        db.collection("caregiving_tickets")
                 .whereEqualTo("ownerId", currentUserId)
-                .whereEqualTo("isRated", false)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        CaregivingTicket ticket = doc.toObject(CaregivingTicket.class);
+                        CaregivingTicket ticket = new CaregivingTicket();
 
-                        if (hasCaregivingEnded(ticket)) {
-                            ticketsToRate.add(ticket);
-                        }
+                        ticket.setTicketId(doc.getString("ticketId"));
+
+                        Pet pet = new Pet();
+                        pet.setName(doc.getString("petName"));
+                        ticket.setPet(pet);
+
+                        db.collection("applications").whereEqualTo("ticketId",ticket.getTicketId()).whereEqualTo("type","caregiving").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                    ticket.setCaregivingUserId(doc.getString("applicantId"));
+
+                                    ticketsToRate.add(ticket);
+                                }
+                                adapter = new CaregiverRatingAdapter(RatingListActivity.this, ticketsToRate);
+                                recyclerView.setAdapter(adapter);
+                            }
+                        });
                     }
-                    adapter = new CaregiverRatingAdapter(RatingListActivity.this, ticketsToRate);
-                    recyclerView.setAdapter(adapter);
                 });
     }
 

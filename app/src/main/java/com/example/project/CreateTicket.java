@@ -10,6 +10,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +24,14 @@ public class CreateTicket extends AppCompatActivity {
     private FirebaseAuth auth;
     private String selectedPetId, selectedSpecies, selectedPetName, selectedPetGender;
     private Pet selectedPet;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_adoption_ticket);
+
+        db = FirebaseFirestore.getInstance();
 
         findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,7 +47,8 @@ public class CreateTicket extends AppCompatActivity {
         dbManager = new FirebaseDatabaseManager();
         auth = FirebaseAuth.getInstance();
 
-        setupPetSelection();
+        fetchPets(auth.getCurrentUser().getUid());
+
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,12 +57,22 @@ public class CreateTicket extends AppCompatActivity {
         });
     }
 
-    private void setupPetSelection() {
-        FirebaseUser user = auth.getCurrentUser();
-        // if (user == null) return;
-
-        String uuid = "123"; // user.getUuid(); //user.getId(); //ChatGPT'ye bakalım
-
+    private void fetchPets(String ownerId) {
+        db.collection("pets")
+                .whereEqualTo("ownerId", ownerId)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<Pet> petList = new ArrayList<>();
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        Pet pet = doc.toObject(Pet.class);
+                        if (pet != null) {
+                            petList.add(pet);
+                        }
+                    }
+                    displayPets(petList);
+                })
+                .addOnFailureListener(e -> {
+                });
     }
 
     private void displayPets(List<Pet> pets) {
@@ -109,9 +125,7 @@ public class CreateTicket extends AppCompatActivity {
 
         FirebaseUser user = auth.getCurrentUser();
 
-        String uuid = "123"; // user.getUuid(); //user.getId() //ChatGPT'ye bakalım
-
-        Ticket ticket = new Ticket(uuid,
+        Ticket ticket = new Ticket(user.getUid(),
                 selectedPetId,
                 selectedSpecies,
                 details,

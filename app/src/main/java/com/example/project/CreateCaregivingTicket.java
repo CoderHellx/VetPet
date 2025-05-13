@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +31,15 @@ public class CreateCaregivingTicket extends AppCompatActivity {
 
     Button postRequest;
 
+    FirebaseFirestore db;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.post_caregiver_ticket);
+
+        db = FirebaseFirestore.getInstance();
 
         findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +61,7 @@ public class CreateCaregivingTicket extends AppCompatActivity {
         sMinute = findViewById(R.id.sMin);
         sDate = findViewById(R.id.sDate);
 
-        setupPetSelection();
+        fetchPets(auth.getCurrentUser().getUid());
 
 
         postRequest.setOnClickListener(new View.OnClickListener() {
@@ -74,7 +80,7 @@ public class CreateCaregivingTicket extends AppCompatActivity {
                 }
 
                 ticket.setPet(selectedPet);
-                ticket.setOwnerId("123"); //User.getId();
+                ticket.setOwnerId(auth.getCurrentUser().getUid()); //User.getId();
                 ticket.setSpecie(selectedSpecies);
                 ticket.setPetId(selectedPetId);
                 ticket.setDetails(additionalInfo.getText().toString());
@@ -91,13 +97,23 @@ public class CreateCaregivingTicket extends AppCompatActivity {
         });
     }
 
-    private void setupPetSelection() {
-        FirebaseUser user = auth.getCurrentUser();
-        // if (user == null) return;
 
-        String uuid = "123"; // user.getUuid(); //user.getId(); //ChatGPT'ye bakalım uuid ile ilgili
-
-        //displayPets(testPets);
+    private void fetchPets(String ownerId) {
+        db.collection("pets")
+                .whereEqualTo("ownerId", ownerId)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<Pet> petList = new ArrayList<>();
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        Pet pet = doc.toObject(Pet.class);
+                        if (pet != null) {
+                            petList.add(pet);
+                        }
+                    }
+                    displayPets(petList);
+                })
+                .addOnFailureListener(e -> {
+                });
     }
 
     private void displayPets(List<Pet> pets) {

@@ -19,7 +19,6 @@ import com.google.firebase.auth.FirebaseUser;
 import android.text.InputType;
 
 public class SignInActivity extends AppCompatActivity {
-    public static User currentUser;
     private FirebaseAuth mAuth;
     private EditText emailET, passET;
     private ProgressBar progressBar;
@@ -89,7 +88,7 @@ public class SignInActivity extends AppCompatActivity {
         FirebaseDatabaseManager dbManager = new FirebaseDatabaseManager();
         dbManager.fetchUserByUid(uid)
                 .addOnSuccessListener(user -> {
-                    currentUser = user;
+                    Utils.currentUser = user;
                     Toast.makeText(SignInActivity.this,
                             "Welcome: " + user.getEmail(),
                             Toast.LENGTH_SHORT).show();

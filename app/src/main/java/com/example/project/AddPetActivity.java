@@ -14,7 +14,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.type.Date;
 
+import java.util.Calendar;
 import java.util.UUID;
 
 public class AddPetActivity extends AppCompatActivity {
@@ -93,8 +95,14 @@ public class AddPetActivity extends AppCompatActivity {
     }
 
     private void uploadImageAndSavePet() {
-        String ownerId = SignInActivity.currentUser.userId;
+        String ownerId = Utils.currentUser.userId;
         String petId = UUID.randomUUID().toString();
+
+        String[] parts = inputBirthday.getText().toString().split("/");
+
+        int birthYear = Integer.parseInt(parts[2]);
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        int age = currentYear - birthYear;
 
         if (selectedImageUri == null) {
 
@@ -111,12 +119,14 @@ public class AddPetActivity extends AppCompatActivity {
                     defaultImageUrl
             );
 
+            pet.setAge(age);
+
             db.collection("pets")
                     .document(petId)
                     .set(pet)
                     .addOnSuccessListener(aVoid -> {
-                        if (SignInActivity.currentUser != null) {
-                            SignInActivity.currentUser.addPetToPets(pet);
+                        if (Utils.currentUser != null) {
+                            Utils.currentUser.addPetToPets(pet);
                         }
 
                         Toast.makeText(AddPetActivity.this, "Pet added successfully!", Toast.LENGTH_SHORT).show();
@@ -145,6 +155,8 @@ public class AddPetActivity extends AppCompatActivity {
                                         inputInfo.getText().toString(),
                                         uri.toString()
                                 );
+
+                                pet.setAge(age);
 
                                 db.collection("pets")
                                         .document(petId)

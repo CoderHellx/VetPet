@@ -9,14 +9,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class ViewAdoptionTickets extends AppCompatActivity {
-    TextView emailText = findViewById(R.id.email);
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.adoption_scroll_menu);
 
-        //emailText.setText(); // set email after the user is created
 
         findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
             @Override

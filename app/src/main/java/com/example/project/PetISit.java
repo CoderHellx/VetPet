@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ public class PetISit extends AppCompatActivity {
     FirebaseDatabaseManager db;
     PetsAdapter petsAdapter;
     ArrayList<Map<String, Object>> petsArray = new ArrayList<>();
+
+    FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +46,9 @@ public class PetISit extends AppCompatActivity {
         petsRecyclerView = findViewById(R.id.pets);
         petsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        String userId = "123"; //User.getId();
+        auth = FirebaseAuth.getInstance();
+
+        String userId = auth.getCurrentUser().getUid();
 
         db.getApprovedCaregivingTicketsByUser(userId).addOnSuccessListener(documents -> {
             if (documents != null && !documents.isEmpty()) {

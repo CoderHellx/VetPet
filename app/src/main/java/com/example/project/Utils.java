@@ -1,8 +1,14 @@
 package com.example.project;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,6 +28,41 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class Utils {
+
+    public static User currentUser;
+
+    public static FirebaseAuth auth;
+    public static FirebaseUser user;
+
+    public interface CurrentUserCallback {
+        void onUserReady(User user);
+    }
+
+    public static void getCurrentUser(CurrentUserCallback callback) {
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+
+        if (currentUser != null) {
+            callback.onUserReady(currentUser);
+        } else if (user != null) {
+            FirebaseDatabaseManager dbManager = new FirebaseDatabaseManager();
+            dbManager.fetchUserByUid(user.getUid())
+                    .addOnSuccessListener(fetchedUser -> {
+                        currentUser = fetchedUser;
+                        callback.onUserReady(currentUser);
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Utils", "Kullanıcı verisi alınamadı: " + e.getMessage());
+                        callback.onUserReady(null); // ya da error durumu için farklı callback verilebilir
+                    });
+        } else {
+            callback.onUserReady(null);
+        }
+    }
+
+    public static void setCurrentUser(User currentUser) {
+        Utils.currentUser = currentUser;
+    }
 
     public static void getCitiesFromApi(String countryName, Context context, Consumer<List<String>> callback) {
         OkHttpClient client = new OkHttpClient();

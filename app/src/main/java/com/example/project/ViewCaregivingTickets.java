@@ -8,13 +8,11 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class ViewCaregivingTickets extends AppCompatActivity {
-    TextView emailText = findViewById(R.id.email);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_caregiving_tickets);
 
-        //emailText.setText(); set email after the user is created
 
         findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
             @Override

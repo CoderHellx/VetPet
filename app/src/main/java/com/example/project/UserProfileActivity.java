@@ -100,7 +100,7 @@ public class UserProfileActivity extends AppCompatActivity {
                         String surname = documentSnapshot.getString("surname");
                         String email = documentSnapshot.getString("email");
                         String password = documentSnapshot.getString("password");
-                        Double rank = documentSnapshot.getDouble("ranking");
+                        Double rank = documentSnapshot.getDouble("averageRating");
                         country = documentSnapshot.getString("country");
                         city = documentSnapshot.getString("city");
                         namesurnameText.setText(name + " " + surname);

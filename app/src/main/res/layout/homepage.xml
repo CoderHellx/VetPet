@@ -98,15 +98,13 @@
             android:id="@+id/llPets"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+            android:orientation="horizontal">
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/AddingPetButton"
                 android:layout_width="100dp"
-                android:layout_height="80dp"
-                android:layout_marginBottom="100dp"
+                android:layout_height="100dp"
+                android:scaleType="centerCrop"
                 android:background="@drawable/plus"
                 android:contentDescription="pet add"
                 app:layout_constraintStart_toStartOf="parent"
