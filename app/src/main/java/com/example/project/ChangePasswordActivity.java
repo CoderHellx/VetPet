@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -19,7 +21,9 @@ public class ChangePasswordActivity extends AppCompatActivity {
     Button button;
     DocumentReference currentUser;
     ImageButton returnbutton;
-    String currentuserId, password ;
+    String currentuserId, password;
+    FirebaseAuth mAuth;
+    DocumentReference currentuser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +35,11 @@ public class ChangePasswordActivity extends AppCompatActivity {
         newPasswordedittext = findViewById(R.id.newpasswordedittext);
         confirmNewPasswordedittext = findViewById(R.id.confirmnewpasswordedittext);
         returnbutton = findViewById(R.id.back);
+        mAuth = FirebaseAuth.getInstance();
 
-        currentuserId = getIntent().getStringExtra("id");
-        currentUser = FirebaseFirestore.getInstance().collection("users").document(
+        FirebaseUser user = mAuth.getCurrentUser();
+        currentuserId = user.getUid();
+        currentuser = FirebaseFirestore.getInstance().collection("users").document(
                 currentuserId);
 
         currentUser.get().addOnSuccessListener(documentSnapshot -> {
