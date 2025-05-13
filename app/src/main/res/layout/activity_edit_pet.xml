@@ -36,14 +36,12 @@
 
 
         <!-- Type -->
-        <EditText
+        <Spinner
             android:id="@+id/inputType"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:backgroundTint="#CCCCCC"
-            android:hint="Type"
-            android:inputType="text" />
+            android:backgroundTint="#CCCCCC" />
 
         <!-- Name -->
         <EditText
