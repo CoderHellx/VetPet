@@ -165,7 +165,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                         if (user != null) {
                             //userID ve password e bakılacak
-                            db.saveUser(new User("", nameET.getText().toString(), surnameET.getText().toString(), emailET.getText().toString()))
+                            db.saveUser(new User(user.getUid(), nameET.getText().toString(), surnameET.getText().toString(), emailET.getText().toString()))
                                     .addOnSuccessListener(unused -> {
                                         Log.d("SAVE_USER", "User saved successfully!");
                                     })

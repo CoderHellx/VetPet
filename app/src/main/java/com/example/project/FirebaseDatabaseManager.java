@@ -53,7 +53,6 @@ public class FirebaseDatabaseManager {
     //User Save (Değişebilir)
     public Task<Void> saveUser(User user){
         DocumentReference ref = db.collection("users").document();
-        user.setUserId(ref.getId()); //This could be the problem
 
         Map<String, Object> userData = new HashMap<>();
         userData.put("userId", user.getUserId());
