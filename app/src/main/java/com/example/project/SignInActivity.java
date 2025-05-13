@@ -24,7 +24,6 @@ public class SignInActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private EditText emailET, passET;
     private ProgressBar progressBar;
-
     private TextView forgotPasswordText;
 
     @Override
@@ -95,7 +94,23 @@ public class SignInActivity extends AppCompatActivity {
                                 Toast.LENGTH_LONG).show();
                     }
                 });
-        //user = new User("123",); // Add Id or something
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        String uid = firebaseUser.getUid();
+
+        FirebaseDatabaseManager dbManager = new FirebaseDatabaseManager();
+        dbManager.fetchUserByUid(uid).addOnSuccessListener(user -> {
+            currentUser = user;
+
+            // Optionally pass currentUser to the next Activity via Intent
+            Intent intent = new Intent(SignInActivity.this, HomepageActivity.class);
+            intent.putExtra("currentUserName", user.getName()); // example
+            startActivity(intent);
+            finish();
+
+        }).addOnFailureListener(e -> {
+            Toast.makeText(SignInActivity.this, "User data not found: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        });
+
     }
 
     private void showResetPasswordDialog() {

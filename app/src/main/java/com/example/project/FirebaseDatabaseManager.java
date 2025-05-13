@@ -53,7 +53,7 @@ public class FirebaseDatabaseManager {
     //User Save (Değişebilir)
     public Task<Void> saveUser(User user){
         DocumentReference ref = db.collection("users").document();
-        user.setUserId(ref.getId());
+        user.setUserId(ref.getId()); //This could be the problem
 
         Map<String, Object> userData = new HashMap<>();
         userData.put("userId", user.getUserId());
@@ -333,28 +333,28 @@ public class FirebaseDatabaseManager {
                 });
     }
     //User Fetch (değişebilir)
-    public Task<List<User>> fetchUsers() {
-        TaskCompletionSource<List<User>> taskSource = new TaskCompletionSource<>();
+    public Task<User> fetchUserByUid(String uid) {
+        TaskCompletionSource<User> taskSource = new TaskCompletionSource<>();
 
-        db.collection("users")
-                .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    List<User> users = new ArrayList<>();
-                    for (DocumentSnapshot document : querySnapshot.getDocuments()) {
-                        String userId = document.getString("userId");
+        db.collection("users").document(uid).get()
+                .addOnSuccessListener(document -> {
+                    if (document.exists()) {
                         String name = document.getString("name");
                         String surname = document.getString("surname");
                         String email = document.getString("email");
+                        String password = document.getString("password");
 
-                        User user = new User(userId, name, surname, email);
-                        users.add(user);
+                        User user = new User(uid, name, surname, email);
+                        taskSource.setResult(user);
+                    } else {
+                        taskSource.setException(new Exception("User not found"));
                     }
-                    taskSource.setResult(users);
                 })
                 .addOnFailureListener(taskSource::setException);
 
         return taskSource.getTask();
     }
+
 
     //Deleting Notifications
     public Task<Void> deleteNotification(String applicationId) {
