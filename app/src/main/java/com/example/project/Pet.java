@@ -20,7 +20,7 @@ public class Pet implements Serializable {
         this.id = id;
         this.ownerId = ownerId;
         this.name = name;
-        this.species = species;
+        this.species = type;
         this.birthday = birthday;
         this.gender = gender;
         this.additionalInfo = additionalInfo;
