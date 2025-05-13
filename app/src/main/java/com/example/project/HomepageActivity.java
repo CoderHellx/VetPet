@@ -26,7 +26,7 @@ public class HomepageActivity extends AppCompatActivity {
     private static final int ADD_PET_REQUEST = 1002;
 
     private void displayPets(List<Pet> pets) {
-        llPets.removeAllViews(); // clear old views
+
         for (int i = 0; i < pets.size(); i++) {
             View petView = getLayoutInflater().inflate(R.layout.item_pet, llPets, false);
             ImageView imgPet = petView.findViewById(R.id.imgPet);
