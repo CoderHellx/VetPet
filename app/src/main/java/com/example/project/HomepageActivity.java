@@ -122,7 +122,7 @@ public class HomepageActivity extends AppCompatActivity {
 
         findViewById(R.id.AddingPetButton).setOnClickListener(view -> {
             Intent intent = new Intent(HomepageActivity.this, AddPetActivity.class);
-            startActivityForResult(intent, ADD_PET_REQUEST);
+            startActivityForResult (intent, ADD_PET_REQUEST);
         });
 
         findViewById(R.id.RankCaregivers).setOnClickListener(view -> {
@@ -139,8 +139,11 @@ public class HomepageActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-        //displayPets(User.getPets());
-        //METHOD SONRASI AÇILACAK
+        if(!SignInActivity.currentUser.getPets().isEmpty()){
+            displayPets(SignInActivity.currentUser.getPets());
+        }
+
+
 
     }
 

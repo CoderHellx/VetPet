@@ -20,7 +20,7 @@ import androidx.appcompat.app.AlertDialog;
 import android.text.InputType;
 
 public class SignInActivity extends AppCompatActivity {
-    public User currentUser;
+    public static User currentUser;
     private FirebaseAuth mAuth;
     private EditText emailET, passET;
     private ProgressBar progressBar;
