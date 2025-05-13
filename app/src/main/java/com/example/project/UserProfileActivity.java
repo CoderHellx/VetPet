@@ -82,7 +82,6 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(UserProfileActivity.this, ChangeEmailActivity.class);
-                intent.putExtra("id", currentuserId);
                 startActivity(intent);
             }
         });
@@ -91,7 +90,6 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(UserProfileActivity.this, ChangePasswordActivity.class);
-                intent.putExtra("id", currentuserId);
                 startActivity(intent);
             }
         });

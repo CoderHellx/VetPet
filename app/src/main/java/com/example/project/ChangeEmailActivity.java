@@ -67,7 +67,7 @@ public class ChangeEmailActivity extends AppCompatActivity {
                             currentUser.update("email",newemailedittext.getText().toString().trim());
                             Toast.makeText(getApplicationContext(), "Your email has been updated", Toast.LENGTH_SHORT).show();
                             finish();
-                            //verifyemail();
+                            verifyemail();
                         }
                     }
                     else{
