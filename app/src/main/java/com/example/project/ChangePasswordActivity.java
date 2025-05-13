@@ -2,7 +2,6 @@ package com.example.project;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -27,20 +26,15 @@ public class ChangePasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
 
-        // Initialize UI components
         changePasswordButton = findViewById(R.id.changepasswordButton);
         currentPasswordEditText = findViewById(R.id.currentpasswordedittext);
         newPasswordEditText = findViewById(R.id.newpasswordedittext);
         confirmNewPasswordEditText = findViewById(R.id.confirmnewpasswordedittext);
         returnButton = findViewById(R.id.back);
 
-        // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-
-        // Handle return button click
         returnButton.setOnClickListener(v -> finish());
 
-        // Handle change password button click
         changePasswordButton.setOnClickListener(v -> changePassword());
     }
 
