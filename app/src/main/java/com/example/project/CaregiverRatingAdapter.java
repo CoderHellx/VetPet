@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.List;
 
 public class CaregiverRatingAdapter extends RecyclerView.Adapter<CaregiverRatingAdapter.TicketViewHolder> {
@@ -34,7 +36,21 @@ public class CaregiverRatingAdapter extends RecyclerView.Adapter<CaregiverRating
     public void onBindViewHolder(@NonNull TicketViewHolder holder, int position) {
         CaregivingTicket ticket = ticketList.get(position);
 
-        holder.textCaregiverName.setText("Caregiver ID: " + ticket.getCaregivingUserId()); // You may fetch name
+        FirebaseFirestore.getInstance().collection("users")
+                .document(ticket.getCaregivingUserId())
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    String caregiverName = snapshot.getString("name");
+                    if (caregiverName != null && !caregiverName.isEmpty()) {
+                        holder.textCaregiverName.setText(caregiverName);
+                    } else {
+                        holder.textCaregiverName.setText("Unknown Caregiver");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    holder.textCaregiverName.setText("Unknown Caregiver");
+                });
+
         holder.textPetName.setText("Pet: " + ticket.getPet().getName());
 
         holder.buttonRate.setOnClickListener(v -> {
@@ -43,6 +59,7 @@ public class CaregiverRatingAdapter extends RecyclerView.Adapter<CaregiverRating
             context.startActivity(intent);
         });
     }
+
 
     @Override
     public int getItemCount() {

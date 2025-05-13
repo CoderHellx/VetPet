@@ -1,9 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:padding="24dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F8D7E8"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:text="Rate this caregiver"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#B05574"
+        android:layout_marginBottom="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <RatingBar
         android:id="@+id/ratingBar"
@@ -15,8 +25,12 @@
 
     <Button
         android:id="@+id/submitButton"
-        android:text="Submit Rating"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="24dp"
+        android:background="@drawable/rounded_button"
+        android:backgroundTint="@color/pinkLight"
+        android:text="Submit Rating"
+        android:textColor="#B05574" />
 </LinearLayout>
+
