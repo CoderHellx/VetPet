@@ -19,9 +19,9 @@ public class ChangeEmailActivity extends AppCompatActivity {
 
     EditText currentemailedittext,newemailedittext,confirmNewemailedittext;
     Button button;
-    DocumentReference currentUser;
+    DocumentReference currentuser;
     ImageButton returnbutton;
-    String currentuserId, email ;
+    String currentuserId, email;
     FirebaseAuth mAuth;
 
     @Override
@@ -35,8 +35,12 @@ public class ChangeEmailActivity extends AppCompatActivity {
         button = findViewById(R.id.changeemailButton);
         returnbutton = findViewById(R.id.back);
 
-        currentuserId = getIntent().getStringExtra("id");
-        currentUser = FirebaseFirestore.getInstance().collection("users").document(
+        mAuth = FirebaseAuth.getInstance();
+
+        FirebaseUser user = mAuth.getCurrentUser();
+        currentuserId = user.getUid();
+
+        currentuser = FirebaseFirestore.getInstance().collection("users").document(
                 currentuserId);
 
         returnbutton.setOnClickListener(new View.OnClickListener(){
@@ -46,7 +50,7 @@ public class ChangeEmailActivity extends AppCompatActivity {
             }
         });
 
-        currentUser.get().addOnSuccessListener(documentSnapshot -> {
+        currentuser.get().addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         email = documentSnapshot.getString("email");
                     }
@@ -64,10 +68,8 @@ public class ChangeEmailActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "Email cannot be empty", Toast.LENGTH_SHORT).show();
                         }
                         else {
-                            currentUser.update("email",newemailedittext.getText().toString().trim());
-                            Toast.makeText(getApplicationContext(), "Your email has been updated", Toast.LENGTH_SHORT).show();
-                            finish();
                             verifyemail();
+                            finish();
                         }
                     }
                     else{
@@ -97,5 +99,4 @@ public class ChangeEmailActivity extends AppCompatActivity {
                     }
                 });
     }
-
 }
