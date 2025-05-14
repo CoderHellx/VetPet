@@ -29,7 +29,7 @@
     <string name="other">OTHER</string>
     <string name="rabbit">RABBIT</string>
     <string name="bird">BIRD</string>
-    <string name="hamster">hamster</string>,
+    <string name="hamster">HAMSTER</string>,
     <string name="returnText">return</string>
     <string name="send_message_request">Send Message Request</string>
     <string name="apply_for_caregiving">Apply for Caregiving</string>,

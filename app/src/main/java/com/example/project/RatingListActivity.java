@@ -1,6 +1,7 @@
 package com.example.project;
 
 import android.os.Bundle;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,6 +35,10 @@ public class RatingListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rating_list);
+
+        Button buttonBack = findViewById(R.id.back);
+        buttonBack.setOnClickListener(v -> finish()); // this goes back to the previous activity
+
 
         recyclerView = findViewById(R.id.recyclerViewTickets);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
