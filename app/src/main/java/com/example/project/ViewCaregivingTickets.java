@@ -56,7 +56,7 @@ public class ViewCaregivingTickets extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent();
                 intent.setClass(getApplicationContext(), CaregivingTickets.class);
-                intent.putExtra("type", "rabbit");
+                intent.putExtra("type", "RABBIT");
                 startActivity(intent);
             }
         });

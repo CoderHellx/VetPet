@@ -45,8 +45,6 @@ public class HomepageActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     Intent i = new Intent(getApplicationContext(), PetDetailActivity.class);
-                    // i.setClass(getApplicationContext(), className.class);
-                    // startActivity(i);
                     i.putExtra("pet", pet);
                     startActivity(i);
                 }

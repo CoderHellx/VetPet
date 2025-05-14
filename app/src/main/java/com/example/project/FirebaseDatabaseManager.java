@@ -1,6 +1,7 @@
 package com.example.project;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -31,6 +32,7 @@ import java.util.Map;
 
 public class FirebaseDatabaseManager {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
     public Task<Void> saveTicket(Ticket ticket) {
         DocumentReference ref = db.collection("tickets").document();
@@ -357,6 +359,36 @@ public class FirebaseDatabaseManager {
                         taskSource.setException(new Exception("User not found"));
                     }
                 })
+                .addOnFailureListener(taskSource::setException);
+
+        return taskSource.getTask();
+    }
+    public Task<User> fetchUserByApplicationId(String applicationId){
+        TaskCompletionSource<User> taskSource = new TaskCompletionSource<>();
+
+        db.collection("applications").document(applicationId).get()
+                .addOnSuccessListener(document -> {
+                    if(document.exists()){
+                        String applicantId = document.getString("applicantId");
+                        fetchUserByUid(applicantId)
+                                .addOnSuccessListener(user -> {
+                                    String name = user.getName();
+                                    String surname = user.getSurname();
+                                    String email = user.getEmail();
+                                    String password = user.getPassword();
+                                    String country = user.getCountry();
+                                    String city = user.getCity();
+
+                                    User applicant = new User(applicantId, name, surname, email, country);
+                                    user.setCity(city);
+                                    taskSource.setResult(applicant);
+                                })
+                                .addOnFailureListener(taskSource::setException);
+                    }
+                    else{
+                        taskSource.setException(new Exception("User not found"));
+                    }
+        })
                 .addOnFailureListener(taskSource::setException);
 
         return taskSource.getTask();
