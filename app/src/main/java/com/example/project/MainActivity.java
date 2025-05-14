@@ -28,13 +28,6 @@ public class MainActivity extends AppCompatActivity {
 
         user = auth.getCurrentUser();
 
-        if(user != null) {
-            Intent i = new Intent();
-            i.setClass(getApplicationContext(), HomepageActivity.class);
-            startActivity(i);
-            finish();
-        }
-
         InputStreamReader is = null;
         try {
             is = new InputStreamReader(getAssets().open("world_cities.csv"));
