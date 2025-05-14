@@ -47,10 +47,10 @@
         <EditText
             android:id="@+id/inputName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="70dp"
             android:layout_marginTop="12dp"
-            android:backgroundTint="#CCCCCC"
-            android:hint="Name"
+            android:background="@drawable/edittext_rounded_background"
+            android:hint=" Name"
             android:inputType="text" />
 
         <!-- Birthday & Gender in Row -->
@@ -84,9 +84,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:backgroundTint="#CCCCCC"
-            android:gravity="top"
-            android:hint="Additional Information"
+            android:background="@drawable/edittext_rounded_background"
+            android:hint=" Additional Information"
             android:inputType="textMultiLine"
             android:minLines="3" />
 
@@ -94,7 +93,7 @@
         <Button
             android:id="@+id/buttonDelete"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="70dp"
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/pinkLight"
             android:text="DELETE PET"
@@ -106,7 +105,7 @@
         <Button
             android:id="@+id/buttonSave"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="70dp"
             android:layout_marginTop="8dp"
             android:backgroundTint="@color/pinkLight"
             android:text="SAVE CHANGES"
