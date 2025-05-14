@@ -29,6 +29,7 @@ public class HomepageActivity extends AppCompatActivity {
 
         for (int i = 0; i < pets.size(); i++) {
             View petView = getLayoutInflater().inflate(R.layout.item_pet, llPets, false);
+            petView.setTag("pet_view");
             ImageView imgPet = petView.findViewById(R.id.imgPet);
 
 
@@ -81,7 +82,7 @@ public class HomepageActivity extends AppCompatActivity {
         llPets = findViewById(R.id.llPets);
         db = FirebaseFirestore.getInstance();
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        fetchPets(currentUserId);
+        //fetchPets(currentUserId);
 
         findViewById(R.id.adoption).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,7 +148,7 @@ public class HomepageActivity extends AppCompatActivity {
                     @Override
                     public void onPetsFetched(ArrayList<Pet> pets) {
                         if(!pets.isEmpty()) {
-                            displayPets(pets);
+                           // displayPets(pets);
                         }
                     }
                 });
@@ -157,11 +158,24 @@ public class HomepageActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        for (int i = llPets.getChildCount() - 1; i >= 0; i--) {
+            View child = llPets.getChildAt(i);
+            if ("pet_view".equals(child.getTag())) {
+                llPets.removeViewAt(i);
+            }
+        }
+        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        fetchPets(currentUserId);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_PET_REQUEST && resultCode == RESULT_OK) {
             String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            fetchPets(currentUserId);
+            //fetchPets(currentUserId);
         }
     }
 }
