@@ -1,7 +1,14 @@
 package com.example.project;
 
+import android.content.Context;
+import android.widget.Toast;
+
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class CaregivingTicket implements Serializable {
 
@@ -151,4 +158,53 @@ public class CaregivingTicket implements Serializable {
     public void setRated(boolean rated){
         this.isRated = rated;
     }
+
+    public boolean hasCaregivingEnded(Context context) {
+        if (endingDate == null || endingTimeHour == null || endingTimeMinute == null) {
+            // Toast.makeText(context, "Missing data: " +
+            // "\nendingDate: " + endingDate +
+            //"\nendingTimeHour: " + endingTimeHour +
+            // "\nendingTimeMinute: " + endingTimeMinute,
+            //Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        try {
+            String[] dateParts = endingDate.split("/");
+            if (dateParts.length != 3) {
+                //Toast.makeText(context, "Incorrect date format: " + endingDate, Toast.LENGTH_LONG).show();
+                return false;
+            }
+
+            int day = Integer.parseInt(dateParts[0]);
+            int month = Integer.parseInt(dateParts[1]) - 1;
+            int year = Integer.parseInt(dateParts[2]);
+
+            int hour = Integer.parseInt(endingTimeHour);
+            int minute = Integer.parseInt(endingTimeMinute);
+
+            Calendar endTime = Calendar.getInstance();
+            endTime.set(year, month, day, hour, minute, 0);
+            endTime.set(Calendar.MILLISECOND, 0);
+
+            Calendar now = Calendar.getInstance();
+
+            String debug = "Now: " + now.getTime() + "\nEnd: " + endTime.getTime();
+            //Toast.makeText(context, debug, Toast.LENGTH_LONG).show();
+
+            return now.after(endTime);
+        } catch (Exception e) {
+            //Toast.makeText(context, "Exception: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+
+
+
+
+
+
 }
