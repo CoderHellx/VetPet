@@ -14,6 +14,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class RateCaregiversActivity extends AppCompatActivity {
 
     private RatingBar ratingBar;
@@ -40,7 +44,13 @@ public class RateCaregiversActivity extends AppCompatActivity {
         // Retrieve caregivingTicket from intent (you must pass it from adapter)
         caregivingTicket = (CaregivingTicket) getIntent().getSerializableExtra("ticket");
 
-        submitButton.setOnClickListener(v -> submitRating());
+        submitButton.setOnClickListener(v -> {
+            if (!caregivingTicket.hasCaregivingEnded(RateCaregiversActivity.this)) {
+                Toast.makeText(this, "You cannot rate before the caregiving period ends.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            submitRating();
+        });
     }
 
     private void submitRating() {
@@ -95,5 +105,7 @@ public class RateCaregiversActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }
 

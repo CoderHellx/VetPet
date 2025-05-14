@@ -1,29 +1,20 @@
 package com.example.project;
 
 import android.os.Bundle;
-import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.project.CaregiverRatingAdapter;
-import com.example.project.CaregivingTicket;
-import com.example.project.R;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import android.widget.ImageButton;
-
 
 public class RatingListActivity extends AppCompatActivity {
 
@@ -41,7 +32,6 @@ public class RatingListActivity extends AppCompatActivity {
         ImageButton buttonBack = findViewById(R.id.back);
         buttonBack.setOnClickListener(v -> finish());
 
-
         recyclerView = findViewById(R.id.recyclerViewTickets);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -57,37 +47,55 @@ public class RatingListActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        CaregivingTicket ticket = new CaregivingTicket();
 
+                        Boolean isRated = doc.getBoolean("isRated");
+                        if (isRated != null && isRated) {
+                            continue;
+                        }
+
+                        CaregivingTicket ticket = new CaregivingTicket();
                         ticket.setTicketId(doc.getString("ticketId"));
 
                         Pet pet = new Pet();
                         pet.setName(doc.getString("petName"));
                         ticket.setPet(pet);
 
-                        db.collection("applications").whereEqualTo("ticketId",ticket.getTicketId()).whereEqualTo("type","caregiving").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                            @Override
-                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                    ticket.setCaregivingUserId(doc.getString("applicantId"));
+                        ticket.setEndingDate(
+                                doc.getString("endingDate"),
+                                doc.getString("endingTimeHour"),
+                                doc.getString("endingTimeMinute")
+                        );
 
-                                    ticketsToRate.add(ticket);
-                                }
-                                adapter = new CaregiverRatingAdapter(RatingListActivity.this, ticketsToRate);
-                                recyclerView.setAdapter(adapter);
-                            }
-                        });
+                        ticket.setStartingDate(
+                                doc.getString("startingDate"),
+                                doc.getString("startingTimeHour"),
+                                doc.getString("startingTimeMinute")
+                        );
+
+                        ticket.setRated(isRated != null && isRated);
+
+                        db.collection("applications")
+                                .whereEqualTo("ticketId", ticket.getTicketId())
+                                .whereEqualTo("type", "caregiving")
+                                .get()
+                                .addOnSuccessListener((QuerySnapshot apps) -> {
+                                    for (QueryDocumentSnapshot appDoc : apps) {
+                                        ticket.setCaregivingUserId(appDoc.getString("applicantId"));
+                                        ticketsToRate.add(ticket);
+                                    }
+
+                                    if (adapter == null) {
+                                        adapter = new CaregiverRatingAdapter(RatingListActivity.this, ticketsToRate);
+                                        recyclerView.setAdapter(adapter);
+                                    } else {
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                });
                     }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to load tickets", Toast.LENGTH_SHORT).show();
                 });
     }
 
-    private boolean hasCaregivingEnded(CaregivingTicket ticket) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        try {
-            Date endDate = sdf.parse(ticket.getEndingDate() + " " + ticket.getEndingTimeHour() + ":" + ticket.getEndingTimeMinute());
-            return new Date().after(endDate);
-        } catch (ParseException e) {
-            return false;
-        }
-    }
 }
