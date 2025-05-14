@@ -40,11 +40,12 @@
 
     <EditText
         android:id="@+id/emailEditText"
-        android:layout_width="320dp"
+        android:layout_width="312dp"
         android:layout_height="61dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="260dp"
-        android:hint="Email"
+        android:background="@drawable/edittext_rounded_background"
+        android:hint=" Email"
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.4"
