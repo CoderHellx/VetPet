@@ -67,32 +67,52 @@ public class CreateCaregivingTicket extends AppCompatActivity {
         postRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CaregivingTicket ticket = new CaregivingTicket();
-
                 if (selectedPetId == null) {
                     Toast.makeText(view.getContext(), "Please select a pet", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                String details = additionalInfo.getText().toString().trim();
-                if (details.isEmpty()) {
-                    details = "";
+                final String detailsInput = additionalInfo.getText().toString().trim();
+                final String details = detailsInput.isEmpty() ? "" : detailsInput;
+
+                final String endDate = eDate.getText().toString();
+                final String endHour = eHour.getText().toString();
+                final String endMinute = eMinute.getText().toString();
+                final String startDate = sDate.getText().toString();
+                final String startHour = sHour.getText().toString();
+                final String startMinute = sMinute.getText().toString();
+
+                FirebaseUser currentUser = auth.getCurrentUser();
+                if (currentUser == null) {
+                    Toast.makeText(view.getContext(), "User not signed in", Toast.LENGTH_SHORT).show();
+                    return;
                 }
 
-                ticket.setPet(selectedPet);
-                ticket.setOwnerId(auth.getCurrentUser().getUid()); //User.getId();
-                ticket.setSpecie(selectedSpecies);
-                ticket.setPetId(selectedPetId);
-                ticket.setDetails(additionalInfo.getText().toString());
-                ticket.setCity("Istanbul");
-                ticket.setEndingDate(eDate.getText().toString(), eHour.getText().toString(), eMinute.getText().toString());
-                ticket.setStartingDate(sDate.getText().toString(), sHour.getText().toString(), sMinute.getText().toString());
+                dbManager.fetchUserByUid(currentUser.getUid())
+                        .addOnSuccessListener(user -> {
+                            String city = user.getCity(); // ✅ city from Firestore
 
-                dbManager.saveCaregivingTicket(ticket);
+                            CaregivingTicket ticket = new CaregivingTicket();
+                            ticket.setPet(selectedPet);
+                            ticket.setOwnerId(currentUser.getUid());
+                            ticket.setSpecie(selectedSpecies);
+                            ticket.setPetId(selectedPetId);
+                            ticket.setDetails(details);
+                            ticket.setCity(city);
+                            ticket.setEndingDate(endDate, endHour, endMinute);
+                            ticket.setStartingDate(startDate, startHour, startMinute);
 
-                Toast.makeText(CreateCaregivingTicket.this, "Success", Toast.LENGTH_SHORT).show();
+                            dbManager.saveCaregivingTicket(ticket)
+                                    .addOnSuccessListener(unused -> {
+                                        Toast.makeText(CreateCaregivingTicket.this, "Success", Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    })
+                                    .addOnFailureListener(e ->
+                                            Toast.makeText(CreateCaregivingTicket.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                        })
+                        .addOnFailureListener(e ->
+                                Toast.makeText(CreateCaregivingTicket.this, "User fetch failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
 
-                finish();
             }
         });
     }

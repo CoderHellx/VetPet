@@ -22,7 +22,7 @@ public class CreateTicket extends AppCompatActivity {
     private Button btnCreate;
     private FirebaseDatabaseManager dbManager;
     private FirebaseAuth auth;
-    private String selectedPetId, selectedSpecies, selectedPetName, selectedPetGender;
+    private String selectedPetId, selectedSpecies, selectedPetName, selectedPetGender, selectedCity;
     private Pet selectedPet;
     private FirebaseFirestore db;
 
@@ -104,7 +104,6 @@ public class CreateTicket extends AppCompatActivity {
                 selectedSpecies = pet.getSpecies();
                 selectedPetName = pet.getName();
                 selectedPetGender = pet.getGender();
-
                 selectedPet = pet;
             });
 
@@ -118,28 +117,40 @@ public class CreateTicket extends AppCompatActivity {
             return;
         }
 
-        String details = etDetails.getText().toString().trim();
-        if (details.isEmpty()) {
-            details = "";
+        final String detailsInput = etDetails.getText().toString().trim();
+        final String details = detailsInput.isEmpty() ? "" : detailsInput;
+
+        FirebaseUser firebaseUser = auth.getCurrentUser();
+        if (firebaseUser == null) {
+            Toast.makeText(this, "User not signed in", Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        FirebaseUser user = auth.getCurrentUser();
+        dbManager.fetchUserByUid(firebaseUser.getUid())
+                .addOnSuccessListener(user -> {
+                    String userCity = user.getCity(); // ✅ fetched city
 
-        Ticket ticket = new Ticket(user.getUid(),
-                selectedPetId,
-                selectedSpecies,
-                details,
-                "Istanbul"
-        );
+                    Ticket ticket = new Ticket(
+                            user.getUserId(),
+                            selectedPetId,
+                            selectedSpecies,
+                            details,
+                            userCity
+                    );
 
-        ticket.setPet(selectedPet);
+                    ticket.setPet(selectedPet);
 
-        dbManager.saveTicket(ticket)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Ticket created!", Toast.LENGTH_SHORT).show();
-                    finish();
+                    dbManager.saveTicket(ticket)
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(this, "Ticket created!", Toast.LENGTH_SHORT).show();
+                                finish();
+                            })
+                            .addOnFailureListener(e ->
+                                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                 })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to fetch user data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
+
 }

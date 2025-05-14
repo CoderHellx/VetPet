@@ -251,6 +251,7 @@ public class SignUpActivity extends AppCompatActivity {
                             //userID ve password e bakılacak
                             User u = new User(user.getUid(), nameET.getText().toString(), surnameET.getText().toString(), emailET.getText().toString(), selectedCountry);
                             u.setPassword(pass);
+                            u.setCity(selectedCity);
                             db.saveUser(u)
                                     .addOnSuccessListener(unused -> {
                                         Log.d("SAVE_USER", "User saved successfully!");

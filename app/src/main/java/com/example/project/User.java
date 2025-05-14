@@ -43,6 +43,14 @@ public class User {
     }
     public String getUserId(){return userId;}
 
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
     public interface PetsCallback {
         void onPetsFetched(ArrayList<Pet> pets);
     }
