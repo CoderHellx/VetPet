@@ -74,10 +74,34 @@ public class AddPetActivity extends AppCompatActivity {
 
         // Add pet
         addButton.setOnClickListener(v -> {
+            String name = inputName.getText().toString().trim();
+            String birthday = inputBirthday.getText().toString().trim();
+            String info = inputInfo.getText().toString().trim();
 
-                uploadImageAndSavePet();
+            if (name.isEmpty()) {
+                Toast.makeText(AddPetActivity.this, "Please enter the pet's name.", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
+            if (birthday.isEmpty()) {
+                Toast.makeText(AddPetActivity.this, "Please enter the pet's birthday.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (inputGender.getSelectedItem() == null) {
+                Toast.makeText(AddPetActivity.this, "Please select the pet's gender.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (inputType.getSelectedItem() == null) {
+                Toast.makeText(AddPetActivity.this, "Please select the pet's type.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // All required fields are valid → proceed
+            uploadImageAndSavePet();
         });
+
     }
 
     @Override
