@@ -59,7 +59,7 @@ public class ViewAdoptionTickets extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent();
                 intent.setClass(getApplicationContext(), AdoptionTickets.class);
-                intent.putExtra("type", "rabbit");
+                intent.putExtra("type", "RABBIT");
                 startActivity(intent);
             }
         });

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
@@ -76,11 +77,24 @@ public class Notify extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull NotifyViewHolder holder, int position) {
             NotificationModel notification = notifys.get(position);
+            FirebaseUser firebaseUser = auth.getCurrentUser();
 
             holder.message.setText(notification.message);
             holder.status.setText(notification.isRead ? "Okundu" : "Yeni");
 
-            holder.username.setText(notification.userId);
+            //holder.username.setText(notification.userId);
+
+            db.fetchUserByApplicationId(notification.applicationId)
+                    .addOnSuccessListener(user -> {
+                        String userName = user.getName();
+                        String userSurname = user.getSurname();
+
+                        holder.username.setText(userName + " " + userSurname);
+
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(Notify.this, "Failed to fetch user data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
 
             String userId = auth.getCurrentUser().getUid();
 
