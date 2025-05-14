@@ -29,7 +29,7 @@ public class RatingListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rating_list);
 
-        ImageButton buttonBack = findViewById(R.id.back);
+        ImageButton buttonBack = findViewById(R.id.backFromRating);
         buttonBack.setOnClickListener(v -> finish());
 
         recyclerView = findViewById(R.id.recyclerViewTickets);
