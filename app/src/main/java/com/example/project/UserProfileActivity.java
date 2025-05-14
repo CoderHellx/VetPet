@@ -39,6 +39,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private DocumentReference currentUserDoc;
     private String currentUserId;
     private List<String> countryList = new ArrayList<>();
+    FirebaseUser user;
     private Map<String, List<String>> citiesMap = new HashMap<>();
 
     @Override
@@ -48,12 +49,12 @@ public class UserProfileActivity extends AppCompatActivity {
 
         initializeViews();
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
+        user = mAuth.getCurrentUser();
 
         if (user != null) {
             currentUserId = user.getUid();
             currentUserDoc = FirebaseFirestore.getInstance().collection("users").document(currentUserId);
-            loadUserProfile(user);
+            loadUserProfile();
         }
 
         setListeners();
@@ -115,12 +116,11 @@ public class UserProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void loadUserProfile(FirebaseUser user) {
+    private void loadUserProfile() {
         currentUserDoc.get().addOnSuccessListener(document -> {
             if (document.exists()) {
                 String name = document.getString("name");
                 String surname = document.getString("surname");
-                String email = document.getString("email");
                 String password = document.getString("password");
                 currentCountry = document.getString("country");
                 currentCity = document.getString("city");
@@ -128,10 +128,11 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 nameSurnameText.setText(name + " " + surname);
                 rankText.setText(String.valueOf(rank));
+                currentUserDoc.update("email", user.getEmail());
 
                 nameEditText.setText(name);
                 surnameEditText.setText(surname);
-                emailEditText.setText(email);
+                emailEditText.setText(user.getEmail());
                 passwordEditText.setText(password);
             }
         }).addOnFailureListener(e -> Log.e("Firestore", "Failed to fetch user data: " + e.getMessage()));
@@ -140,7 +141,6 @@ public class UserProfileActivity extends AppCompatActivity {
     private void saveChanges() {
         String name = nameEditText.getText().toString().trim();
         String surname = surnameEditText.getText().toString().trim();
-        String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
         String country = (String) countrySpinner.getSelectedItem();
         String city = (String) citySpinner.getSelectedItem();
@@ -150,7 +150,7 @@ public class UserProfileActivity extends AppCompatActivity {
             return;
         }
 
-        currentUserDoc.update("name", name, "surname", surname, "email", email, "password", password, "country", country, "city", city)
+        currentUserDoc.update("name", name, "surname", surname, "email", user.getEmail(), "password", password, "country", country, "city", city)
                 .addOnSuccessListener(aVoid -> {
                     nameSurnameText.setText(name + " " + surname);
                     Toast.makeText(this, "Your profile has been updated", Toast.LENGTH_SHORT).show();
