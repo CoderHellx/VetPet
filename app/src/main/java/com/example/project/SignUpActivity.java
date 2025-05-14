@@ -27,6 +27,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import android.os.Handler;
+import android.os.Looper;
+import java.util.function.Consumer;
+
+
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -65,7 +74,7 @@ public class SignUpActivity extends AppCompatActivity {
         spinnerCountry = findViewById(R.id.countrySpinner);
         spinnerCity    = findViewById(R.id.citySpinner);
 
-        loadCitiesFromCSV();
+        loadCountriesFromApi();
 
         ArrayAdapter<String> countryAdapter = new ArrayAdapter<>(
                 this,
@@ -79,18 +88,20 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 selectedCountry = countryList.get(pos);
-                List<String> cityList = citiesMap.get(selectedCountry);
-                if (cityList == null) cityList = new ArrayList<>();
 
-                ArrayAdapter<String> cityAdapter = new ArrayAdapter<>(
-                        SignUpActivity.this,
-                        android.R.layout.simple_spinner_item,
-                        cityList
-                );
-                cityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerCity.setAdapter(cityAdapter);
+                loadCitiesFromApi(selectedCountry, cityList -> {
+                    ArrayAdapter<String> cityAdapter = new ArrayAdapter<>(
+                            SignUpActivity.this,
+                            android.R.layout.simple_spinner_item,
+                            cityList
+                    );
+                    cityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinnerCity.setAdapter(cityAdapter);
+                });
             }
-            @Override public void onNothingSelected(AdapterView<?> parent) { }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
         });
 
         mAuth = FirebaseAuth.getInstance();
@@ -108,32 +119,103 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
 
-    private void loadCitiesFromCSV() {
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(getAssets().open("world_cities.csv"))
-        )) {
-            String line;
-            reader.readLine();
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length < 2) continue;
-                String city    = parts[0].trim();
-                String country = parts[1].trim();
+    private void loadCountriesFromApi() {
+        OkHttpClient client = new OkHttpClient();
 
-                if (!citiesMap.containsKey(country)) {
-                    citiesMap.put(country, new ArrayList<>());
-                    countryList.add(country);
-                }
-                citiesMap.get(country).add(city);
+        Request request = new Request.Builder()
+                .url("https://countriesnow.space/api/v0.1/countries/positions")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
             }
 
-            Log.d("SPINNER_DEBUG", "Loaded countries: " + countryList.size());
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    try {
+                        String body = response.body().string();
+                        JSONObject json = new JSONObject(body);
+                        JSONArray dataArray = json.getJSONArray("data");
 
+                        countryList.clear();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                        for (int i = 0; i < dataArray.length(); i++) {
+                            JSONObject countryObj = dataArray.getJSONObject(i);
+                            String country = countryObj.getString("name");
+                            countryList.add(country);
+                        }
+
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            ArrayAdapter<String> countryAdapter = new ArrayAdapter<>(
+                                    SignUpActivity.this,
+                                    android.R.layout.simple_spinner_item,
+                                    countryList
+                            );
+                            countryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            spinnerCountry.setAdapter(countryAdapter);
+                        });
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
+
+    private void loadCitiesFromApi(String country, Consumer<List<String>> callback) {
+        OkHttpClient client = new OkHttpClient();
+
+        JSONObject json = new JSONObject();
+        try {
+            json.put("country", country);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        RequestBody body = RequestBody.create(
+                MediaType.get("application/json"),
+                json.toString()
+        );
+
+        Request request = new Request.Builder()
+                .url("https://countriesnow.space/api/v0.1/countries/cities")
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    try {
+                        String resBody = response.body().string();
+                        JSONObject jsonResponse = new JSONObject(resBody);
+                        JSONArray citiesArray = jsonResponse.getJSONArray("data");
+
+                        List<String> cityList = new ArrayList<>();
+                        for (int i = 0; i < citiesArray.length(); i++) {
+                            cityList.add(citiesArray.getString(i));
+                        }
+
+                        new Handler(Looper.getMainLooper()).post(() -> callback.accept(cityList));
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
 
     private void attemptSignUp() {
         String email = emailET.getText().toString().trim();
