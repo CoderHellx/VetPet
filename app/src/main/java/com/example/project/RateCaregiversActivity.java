@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
@@ -29,6 +30,9 @@ public class RateCaregiversActivity extends AppCompatActivity {
 
         ratingBar = findViewById(R.id.ratingBar);
         submitButton = findViewById(R.id.submitButton);
+
+        ImageButton buttonBack = findViewById(R.id.backFromRating);
+        buttonBack.setOnClickListener(v -> finish());
 
         db = FirebaseFirestore.getInstance();
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
