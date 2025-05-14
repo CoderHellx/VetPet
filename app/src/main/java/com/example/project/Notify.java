@@ -85,14 +85,14 @@ public class Notify extends AppCompatActivity {
             String userId = auth.getCurrentUser().getUid();
 
             holder.accept.setOnClickListener(v -> {
-                db.setTicket(notification.applicationId, true, userId);
+                db.setTicket(notification.applicationId, true, userId, notification.userId);
                 Toast.makeText(Notify.this, "Approved.", Toast.LENGTH_SHORT).show();
                 db.deleteNotification(notification.applicationId);
                 finish();
             });
 
             holder.reject.setOnClickListener(v -> {
-                db.setTicket(notification.applicationId, false, userId);
+                db.setTicket(notification.applicationId, false, userId, notification.userId);
                 Toast.makeText(Notify.this, "Rejected.", Toast.LENGTH_SHORT).show();
                 db.deleteNotification(notification.applicationId);
                 finish();

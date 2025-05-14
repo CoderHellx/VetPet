@@ -316,7 +316,7 @@ public class AdoptionTickets extends AppCompatActivity {
                 db.fetchUserByUid(t.getOwnerId()).addOnSuccessListener(new OnSuccessListener<User>() {
                     @Override
                     public void onSuccess(User user) {
-                        Intent i = new Intent(getApplicationContext(), CaregivingDetails.class);
+                        Intent i = new Intent(getApplicationContext(), AdoptionDetails.class);
                         i.putExtra("ticketId", t.getTicketId());
                         i.putExtra("type", t.getPet().getSpecies());
                         i.putExtra("name", t.getPet().getName());

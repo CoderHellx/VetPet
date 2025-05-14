@@ -23,6 +23,8 @@ public class AdoptionDetails extends AppCompatActivity {
 
     FirebaseDatabaseManager db;
 
+    FirebaseAuth auth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +36,8 @@ public class AdoptionDetails extends AppCompatActivity {
                 finish();
             }
         });
+
+        auth = FirebaseAuth.getInstance();
 
         db = new FirebaseDatabaseManager();
 
@@ -55,7 +59,7 @@ public class AdoptionDetails extends AppCompatActivity {
 
         ticketId = getIntent().getStringExtra("ticketId");
 
-        String applicantId = "123";//Will probably change //User.getId();
+        String applicantId = auth.getCurrentUser().getUid();
 
         apply.setOnClickListener(new View.OnClickListener() {
             @Override
