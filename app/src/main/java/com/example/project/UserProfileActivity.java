@@ -1,47 +1,43 @@
 package com.example.project;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.*;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.io.BufferedReader;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Consumer;
+
+import okhttp3.*;
 
 public class UserProfileActivity extends AppCompatActivity {
 
-    EditText nameedittext, surnameedittext, emailedittext, passwordedittext;
-    Button savechanges, logout, deleteprofile;
-    Spinner countryspinner, cityspinner;
-    ImageButton changePassword, changeEmail, returnbutton;
-    String currentuserId,country,city;
-    TextView namesurnameText, rankText;
-    DocumentReference currentuser;
-    ArrayAdapter<String> cityAdapter;
-    ArrayAdapter<String> countryAdapter;
-    FirebaseAuth mAuth;
+    private EditText nameEditText, surnameEditText, emailEditText, passwordEditText;
+    private Button saveChangesBtn, logoutBtn, deleteProfileBtn;
+    private Spinner countrySpinner, citySpinner;
+    private ImageButton changePasswordBtn, changeEmailBtn, returnBtn;
+    private TextView nameSurnameText, rankText;
+    private String currentCountry;
+    private String currentCity;
+    private FirebaseAuth mAuth;
+    private DocumentReference currentUserDoc;
+    private String currentUserId;
     private List<String> countryList = new ArrayList<>();
     private Map<String, List<String>> citiesMap = new HashMap<>();
 
@@ -50,240 +46,221 @@ public class UserProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
-        namesurnameText = findViewById(R.id.namesurname);
-        rankText = findViewById(R.id.rank);
-        nameedittext = findViewById(R.id.nameedittext);
-        surnameedittext = findViewById(R.id.surnameedittext);
-        emailedittext = findViewById(R.id.emailedittext);
-        passwordedittext = findViewById(R.id.passwordedittext);
-        savechanges = findViewById((R.id.saveChangesButton));
-        logout = findViewById((R.id.logoutButton));
-        deleteprofile = findViewById((R.id.deleteProfileButton));
-        changeEmail = findViewById(R.id.changeemailbutton);
-        changePassword = findViewById(R.id.changepasswordbutton);
-        countryspinner = findViewById(R.id.countries);
-        cityspinner = findViewById(R.id.cities);
-        returnbutton = findViewById(R.id.back);
+        initializeViews();
         mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
 
+        if (user != null) {
+            currentUserId = user.getUid();
+            currentUserDoc = FirebaseFirestore.getInstance().collection("users").document(currentUserId);
+            loadUserProfile(user);
+        }
+
+        setListeners();
+        loadCountriesFromApi();
+    }
+
+    private void initializeViews() {
+        nameEditText = findViewById(R.id.nameedittext);
+        surnameEditText = findViewById(R.id.surnameedittext);
+        emailEditText = findViewById(R.id.emailedittext);
+        passwordEditText = findViewById(R.id.passwordedittext);
+        saveChangesBtn = findViewById(R.id.saveChangesButton);
+        logoutBtn = findViewById(R.id.logoutButton);
+        deleteProfileBtn = findViewById(R.id.deleteProfileButton);
+        changeEmailBtn = findViewById(R.id.changeemailbutton);
+        changePasswordBtn = findViewById(R.id.changepasswordbutton);
+        countrySpinner = findViewById(R.id.countries);
+        citySpinner = findViewById(R.id.cities);
+        returnBtn = findViewById(R.id.back);
+        nameSurnameText = findViewById(R.id.namesurname);
+        rankText = findViewById(R.id.rank);
+    }
+
+    private void setListeners() {
+        returnBtn.setOnClickListener(v -> finish());
+
+        changeEmailBtn.setOnClickListener(v -> startActivity(new Intent(this, ChangeEmailActivity.class)));
+
+        changePasswordBtn.setOnClickListener(v -> startActivity(new Intent(this, ChangePasswordActivity.class)));
+
+        saveChangesBtn.setOnClickListener(v -> saveChanges());
+
+        logoutBtn.setOnClickListener(v -> showConfirmationDialog("Logout", "Do you want to logout?", () -> {
+            mAuth.signOut();
+            Toast.makeText(this, "Logging out", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, MainActivity.class));
+        }));
+
+        deleteProfileBtn.setOnClickListener(v -> showConfirmationDialog("Delete Account", "Warning! Deleting your account cannot be undone.", this::deleteAccount));
+
+        countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedCountry = countryList.get(position);
+                loadCitiesFromApi(selectedCountry, cityList -> {
+                    citiesMap.put(selectedCountry, cityList);
+                    ArrayAdapter<String> cityAdapter = new ArrayAdapter<>(UserProfileActivity.this, android.R.layout.simple_spinner_item, cityList);
+                    cityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    citySpinner.setAdapter(cityAdapter);
+                    if (currentCity != null && cityList.contains(currentCity)) {
+                        int cityIndex = cityList.indexOf(currentCity);
+                        citySpinner.setSelection(cityIndex);
+                    }
+                });
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
+    }
+
+    private void loadUserProfile(FirebaseUser user) {
+        currentUserDoc.get().addOnSuccessListener(document -> {
+            if (document.exists()) {
+                String name = document.getString("name");
+                String surname = document.getString("surname");
+                String email = document.getString("email");
+                String password = document.getString("password");
+                currentCountry = document.getString("country");
+                currentCity = document.getString("city");
+                Double rank = document.getDouble("averageRating");
+
+                nameSurnameText.setText(name + " " + surname);
+                rankText.setText(String.valueOf(rank));
+
+                nameEditText.setText(name);
+                surnameEditText.setText(surname);
+                emailEditText.setText(email);
+                passwordEditText.setText(password);
+            }
+        }).addOnFailureListener(e -> Log.e("Firestore", "Failed to fetch user data: " + e.getMessage()));
+    }
+
+    private void saveChanges() {
+        String name = nameEditText.getText().toString().trim();
+        String surname = surnameEditText.getText().toString().trim();
+        String email = emailEditText.getText().toString().trim();
+        String password = passwordEditText.getText().toString().trim();
+        String country = (String) countrySpinner.getSelectedItem();
+        String city = (String) citySpinner.getSelectedItem();
+
+        if (name.isEmpty() || surname.isEmpty()) {
+            Toast.makeText(this, "A field cannot be empty", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        currentUserDoc.update("name", name, "surname", surname, "email", email, "password", password, "country", country, "city", city)
+                .addOnSuccessListener(aVoid -> {
+                    nameSurnameText.setText(name + " " + surname);
+                    Toast.makeText(this, "Your profile has been updated", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void deleteAccount() {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
-            user.reload().addOnSuccessListener(aVoid -> {
-                ChangeEmailActivity.syncFirestoreEmailIfChanged(user);
-            }).addOnFailureListener(e -> {
-                Log.e("SyncEmail", "Failed to reload user", e);
+            user.delete().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    currentUserDoc.delete();
+                    Toast.makeText(this, "Your profile has been deleted", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(this, MainActivity.class));
+                } else {
+                    Log.e("DeleteUser", "Auth deletion failed: " + Objects.requireNonNull(task.getException()).getMessage());
+                }
             });
         }
-        currentuserId = user.getUid();
-        currentuser = FirebaseFirestore.getInstance().collection("users").document(
-                currentuserId);
+    }
 
-        returnbutton.setOnClickListener(new View.OnClickListener() {
+    private void showConfirmationDialog(String title, String message, Runnable onConfirm) {
+        new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("Confirm", (dialog, which) -> onConfirm.run())
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .create()
+                .show();
+    }
+
+    private void loadCountriesFromApi() {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder().url("https://countriesnow.space/api/v0.1/countries/positions").build();
+
+        client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onClick(View v) {
-                finish();
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
             }
-        });
 
-        changeEmail.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(UserProfileActivity.this, ChangeEmailActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        changePassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(UserProfileActivity.this, ChangePasswordActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        currentuser.get().addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        String name = documentSnapshot.getString("name");
-                        String surname = documentSnapshot.getString("surname");
-                        String email = documentSnapshot.getString("email");
-                        String password = documentSnapshot.getString("password");
-                        Double rank = documentSnapshot.getDouble("averageRating");
-                        country = documentSnapshot.getString("country");
-                        city = documentSnapshot.getString("city");
-                        namesurnameText.setText(name + " " + surname);
-                        rankText.setText("" + rank);
-                        nameedittext.setText(name);
-                        surnameedittext.setText(surname);
-                        emailedittext.setText(email);
-                        passwordedittext.setText(password);
-                        int countryPosition = countryAdapter.getPosition(country);
-                        countryspinner.setSelection(countryPosition);
-
-                        List<String> cityList = citiesMap.get(country);
-                        if (cityList != null) {
-                            cityAdapter = new ArrayAdapter<>(
-                                    UserProfileActivity.this,
-                                    android.R.layout.simple_spinner_item,
-                                    cityList
-                            );
-                            cityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            cityspinner.setAdapter(cityAdapter);
-
-                            int cityPosition = cityAdapter.getPosition(city);
-                            cityspinner.setSelection(cityPosition);
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    try {
+                        String jsonBody = response.body().string();
+                        JSONArray dataArray = new JSONObject(jsonBody).getJSONArray("data");
+                        countryList.clear();
+                        for (int i = 0; i < dataArray.length(); i++) {
+                            countryList.add(dataArray.getJSONObject(i).getString("name"));
                         }
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(UserProfileActivity.this, android.R.layout.simple_spinner_item, countryList);
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            countrySpinner.setAdapter(adapter);
+
+                            if (currentCountry != null) {
+                                int countryIndex = countryList.indexOf(currentCountry);
+                                if (countryIndex >= 0) {
+                                    countrySpinner.setSelection(countryIndex);
+                                }
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("Firestore", "User data fetch failed: " + e.getMessage());
-                });
-
-        savechanges.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String newname = nameedittext.getText().toString().trim();
-                String newsurname = surnameedittext.getText().toString().trim();
-                String newemail = emailedittext.getText().toString().trim();
-                String newpassword = passwordedittext.getText().toString().trim();
-                String country = "";
-                String city = "";
-                if (countryspinner.getSelectedItem() != null) {
-                    country = countryspinner.getSelectedItem().toString();
                 }
-                if (cityspinner.getSelectedItem() != null) {
-                    city = cityspinner.getSelectedItem().toString();
-                }
-                if(newname.length()==0 || newsurname.length()==0){
-                    Toast.makeText(getApplicationContext(), "A field cannot be empty", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    currentuser.update("name", newname, "surname", newsurname,
-                            "email", newemail, "password", newpassword,"country",country,"city",city);
-                    namesurnameText.setText(newname + " " + newsurname);
-                    Toast.makeText(getApplicationContext(), "Your profile has been updated", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder warning = new AlertDialog.Builder(UserProfileActivity.this);
-                warning.setTitle("Logout");
-                warning.setMessage("Do you want to logout?");
-                warning.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        FirebaseAuth.getInstance().signOut();
-                        Toast.makeText(getApplicationContext(), "Logging out", Toast.LENGTH_SHORT).show();
-                        Intent i = new Intent();
-                        i.setClass(getApplicationContext(), MainActivity.class);
-                        startActivity(i);
-                    }
-                });
-                warning.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog alertDialog = warning.create();
-                alertDialog.show();
-            }
-        });
-
-        deleteprofile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder warning = new AlertDialog.Builder(UserProfileActivity.this);
-                warning.setTitle("Delete Account");
-                warning.setMessage("Warning! Deleting your account cannot be undone.");
-                warning.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        user.delete()
-                                .addOnCompleteListener(task -> {
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText(getApplicationContext(), "Your profile has been deleted", Toast.LENGTH_SHORT).show();
-                                        currentuser.delete();
-                                        Intent i = new Intent();
-                                        i.setClass(getApplicationContext(), MainActivity.class);
-                                        startActivity(i);
-                                    } else {
-                                        Log.e("DeleteUser", "Auth deletion failed: " + task.getException().getMessage());
-                                    }
-                                });
-                    }
-                });
-                warning.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog alertDialog = warning.create();
-                alertDialog.show();
-            }
-        });
-
-        loadCitiesFromCSV();
-
-        countryAdapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                countryList
-        );
-        countryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        countryspinner.setAdapter(countryAdapter);
-
-        countryspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            boolean firstLoad = true;
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                String selectedCountry = countryList.get(pos);
-                List<String> cityList = citiesMap.get(selectedCountry);
-                if (cityList == null) cityList = new ArrayList<>();
-
-                cityAdapter = new ArrayAdapter<>(
-                        UserProfileActivity.this,
-                        android.R.layout.simple_spinner_item,
-                        cityList
-                );
-                cityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                cityspinner.setAdapter(cityAdapter);
-                if (firstLoad && country != null && city != null) {
-                    int cityposition = cityAdapter.getPosition(city);
-                    cityspinner.setSelection(cityposition);
-                    firstLoad = false;
-                }
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
     }
 
-    private void loadCitiesFromCSV() {
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(getAssets().open("world_cities.csv"))
-        )) {
-            String line;
-            reader.readLine();
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length < 2) continue;
-                String city = parts[0].trim();
-                String country = parts[1].trim();
+    private void loadCitiesFromApi(String country, Consumer<List<String>> callback) {
+        OkHttpClient client = new OkHttpClient();
 
-                if (!citiesMap.containsKey(country)) {
-                    citiesMap.put(country, new ArrayList<>());
-                    countryList.add(country);
-                }
-                citiesMap.get(country).add(city);
+        JSONObject json = new JSONObject();
+        try {
+            json.put("country", country);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        RequestBody body = RequestBody.create(json.toString(), MediaType.get("application/json"));
+        Request request = new Request.Builder()
+                .url("https://countriesnow.space/api/v0.1/countries/cities")
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    try {
+                        String jsonBody = response.body().string();
+                        JSONArray data = new JSONObject(jsonBody).getJSONArray("data");
+                        List<String> cities = new ArrayList<>();
+                        for (int i = 0; i < data.length(); i++) {
+                            cities.add(data.getString(i));
+                        }
+                        new Handler(Looper.getMainLooper()).post(() -> callback.accept(cities));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 }
