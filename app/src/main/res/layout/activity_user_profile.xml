@@ -22,7 +22,7 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="30dp"
       android:text="PROFILE"
-      android:textSize="45dp"
+      android:textSize="30dp"
       android:textStyle="bold"
       android:layout_centerHorizontal="true"
       android:textColor="@color/pinkLight">
@@ -32,7 +32,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_below="@id/back"
-      android:layout_marginTop="20dp"
+      android:layout_marginTop="40dp"
       android:layout_marginLeft="20dp"
       android:layout_marginRight="20dp"
       android:background="@drawable/rounded_linearlayout"
@@ -103,7 +103,6 @@
         android:layout_height="wrap_content"
         android:text="Name"
         android:id="@+id/name"
-        android:textStyle="bold"
         android:textSize="25dp"
         android:layout_alignLeft="@id/nameedittext"
         />
@@ -116,14 +115,13 @@
         android:id="@+id/nameedittext"
         android:layout_below="@+id/name"
         android:background="@drawable/rounded_edittext"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginRight="10dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Surname"
-        android:textStyle="bold"
         android:textSize="25dp"
         android:layout_toRightOf="@+id/name"
         android:id="@+id/surname"
@@ -139,13 +137,13 @@
         android:layout_below="@id/surname"
         android:layout_toEndOf="@+id/nameedittext"
         android:background="@drawable/rounded_edittext"
-        android:layout_marginRight="10dp" />
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Country"
-        android:textStyle="bold"
         android:textSize="25dp"
         android:id="@+id/country"
         android:layout_alignLeft="@id/nameedittext"
@@ -154,6 +152,7 @@
 
     <Spinner
         android:id="@+id/countries"
+        android:layout_marginRight="10dp"
         android:layout_width="160dp"
         android:layout_height="50dp"
         android:spinnerMode="dropdown"
@@ -166,7 +165,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="City"
-        android:textStyle="bold"
         android:textSize="25dp"
         android:id="@+id/city"
         android:layout_alignLeft="@id/surnameedittext"
@@ -178,6 +176,7 @@
         android:id="@+id/cities"
         android:layout_width="160dp"
         android:layout_height="50dp"
+        android:layout_marginRight="20dp"
         android:spinnerMode="dropdown"
         android:dropDownHeight="200dp"
         android:background="@drawable/rounded_edittext"
@@ -188,7 +187,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Email"
-        android:textStyle="bold"
         android:textSize="25dp"
         android:id="@+id/email"
         android:layout_below="@id/countries"
@@ -204,8 +202,8 @@
         android:background="@drawable/rounded_edittext"
         android:id="@+id/emailedittext"
         android:layout_below="@id/email"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:editable="false"/>
 
     <ImageButton
@@ -224,7 +222,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Password"
-        android:textStyle="bold"
         android:textSize="25dp"
         android:id="@+id/password"
         android:layout_below="@id/emailedittext"
@@ -235,8 +232,8 @@
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:text="Password"
         android:textSize="25dp"
         android:background="@drawable/rounded_edittext"
@@ -270,7 +267,9 @@
       android:backgroundTint="@color/pinkLight"
       android:text="SAVE CHANGES"
       android:textSize="30dp"
-      app:cornerRadius="10dp" />
+      app:cornerRadius="10dp"
+      app:strokeColor="@color/white"
+      app:strokeWidth="3dp" />
 
   <Button
       android:id="@+id/logoutButton"
@@ -283,7 +282,9 @@
       android:backgroundTint="@color/pinkLight"
       android:text="LOGOUT"
       android:textSize="30dp"
-      app:cornerRadius="10dp" />
+      app:cornerRadius="10dp"
+      app:strokeColor="@color/white"
+      app:strokeWidth="3dp" />
 
   <Button
       android:id="@+id/deleteProfileButton"
@@ -296,6 +297,8 @@
       android:backgroundTint="@color/pinkLight"
       android:text="DELETE PROFILE"
       android:textSize="30dp"
-      app:cornerRadius="10dp" />
+      app:cornerRadius="10dp"
+      app:strokeColor="@color/white"
+      app:strokeWidth="3dp" />
 
 </RelativeLayout>
