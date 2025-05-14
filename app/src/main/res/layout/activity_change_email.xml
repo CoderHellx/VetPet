@@ -20,9 +20,9 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="15dp"
         android:text="CHANGE EMAIL"
-        android:textSize="45dp"
+        android:textSize="30dp"
         android:textStyle="bold"
         android:layout_centerHorizontal="true"
         android:textColor="@color/pinkLight"
@@ -30,22 +30,23 @@
     </TextView>
 
     <TextView
+        android:id="@+id/currentemail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Current Email"
-        android:textSize="30dp"
-        android:id="@+id/currentemail"
-        android:layout_alignLeft="@id/currentemailedittext"
-        android:layout_marginTop="20dp"
         android:layout_below="@id/changeemailtext"
-        />
+        android:layout_alignLeft="@id/currentemailedittext"
+        android:layout_marginLeft="-3dp"
+        android:layout_marginTop="70dp"
+        android:text="Current Email"
+        android:textSize="20dp" />
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="30dp"
         android:background="@drawable/rounded_edittext"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:id="@+id/currentemailedittext"
         android:layout_below="@id/currentemail" />
 
@@ -53,7 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Password"
-        android:textSize="30dp"
+        android:textSize="20dp"
         android:id="@+id/password"
         android:layout_alignLeft="@id/currentemailedittext"
         android:layout_marginTop="15dp"
@@ -65,8 +66,8 @@
         android:layout_height="wrap_content"
         android:textSize="30dp"
         android:background="@drawable/rounded_edittext"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:id="@+id/passwordedittext"
         android:layout_below="@id/password" />
 
@@ -74,7 +75,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Email"
-        android:textSize="30dp"
+        android:textSize="20dp"
         android:id="@+id/newemail"
         android:layout_alignLeft="@id/currentemailedittext"
         android:layout_marginTop="15dp"
@@ -85,8 +86,8 @@
         android:layout_height="wrap_content"
         android:textSize="30dp"
         android:background="@drawable/rounded_edittext"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:id="@+id/newemailedittext"
         android:layout_below="@id/newemail" />
 
@@ -94,7 +95,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Confirm New Email"
-        android:textSize="30dp"
+        android:textSize="20dp"
         android:id="@+id/confirmnewemail"
         android:layout_alignLeft="@id/currentemailedittext"
         android:layout_marginTop="15dp"
@@ -105,8 +106,8 @@
         android:layout_height="wrap_content"
         android:textSize="30dp"
         android:background="@drawable/rounded_edittext"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:id="@+id/confirmnewemailedittext"
         android:layout_below="@id/confirmnewemail" />
 
@@ -114,13 +115,15 @@
         android:id="@+id/changeemailButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/confirmnewemailedittext"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:layout_marginRight="20dp"
         android:backgroundTint="@color/pinkLight"
         android:text="CHANGE EMAIL"
         android:textSize="35dp"
         app:cornerRadius="10dp"
-        android:layout_below="@id/confirmnewemailedittext"/>
+        app:strokeColor="@color/white"
+        app:strokeWidth="3dp" />
 
 </RelativeLayout>
