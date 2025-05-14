@@ -89,8 +89,9 @@ public class SignInActivity extends AppCompatActivity {
         dbManager.fetchUserByUid(uid)
                 .addOnSuccessListener(user -> {
                     Utils.currentUser = user;
+                    FirebaseUser firebaseuser = mAuth.getCurrentUser();
                     Toast.makeText(SignInActivity.this,
-                            "Welcome: " + user.getEmail(),
+                            "Welcome: " + firebaseuser.getEmail(),
                             Toast.LENGTH_SHORT).show();
 
                     // Start HomepageActivity only once

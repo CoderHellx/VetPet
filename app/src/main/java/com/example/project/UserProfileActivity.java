@@ -67,6 +67,13 @@ public class UserProfileActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            user.reload().addOnSuccessListener(aVoid -> {
+                ChangeEmailActivity.syncFirestoreEmailIfChanged(user);
+            }).addOnFailureListener(e -> {
+                Log.e("SyncEmail", "Failed to reload user", e);
+            });
+        }
         currentuserId = user.getUid();
         currentuser = FirebaseFirestore.getInstance().collection("users").document(
                 currentuserId);
