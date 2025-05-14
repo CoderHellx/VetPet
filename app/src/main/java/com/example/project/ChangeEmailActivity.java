@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.AuthCredential;
@@ -174,41 +175,20 @@ public class ChangeEmailActivity extends AppCompatActivity {
                 });
     }
 
-    public static void completeEmailUpdate(String userId, String newEmail, String enteredCode) {
+    public static void syncFirestoreEmailIfChanged(@NonNull FirebaseUser user) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user.getUid();
 
-        if (user == null) {
-            Log.e(TAG, "User not authenticated when trying to complete email update");
-            return;
-        }
 
-        db.collection("users").document(userId).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        String storedCode = documentSnapshot.getString("verificationCode");
-                        String pendingEmail = documentSnapshot.getString("pendingEmail");
 
-                        if (storedCode != null && storedCode.equals(enteredCode) &&
-                                pendingEmail != null && pendingEmail.equals(newEmail)) {
+        DocumentReference userRef = db.collection("users").document(uid);
+        Map<String, Object> update = new HashMap<>();
+        update.put("email", user.getEmail());
+        update.put("pendingEmail", null);
+        update.put("verificationTimestamp", null);
 
-                            user.updateEmail(newEmail)
-                                    .addOnSuccessListener(aVoid -> {
-                                        Map<String, Object> updates = new HashMap<>();
-                                        updates.put("pendingEmail", null);
-                                        updates.put("verificationCode", null);
-                                        updates.put("verificationTimestamp", null);
-                                        updates.put("email", newEmail);
-
-                                        db.collection("users").document(userId).update(updates);
-
-                                        Log.d(TAG, "Email successfully updated to: " + newEmail);
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Log.e(TAG, "Failed to update email after verification", e);
-                                    });
-                        }
-                    }
-                });
+        userRef.update(update)
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Firestore email field synced with Firebase Auth"))
+                .addOnFailureListener(e -> Log.e(TAG, "Failed to update Firestore email field", e));
     }
 }
