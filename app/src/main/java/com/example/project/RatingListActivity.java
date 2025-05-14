@@ -22,6 +22,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import android.widget.ImageButton;
+
 
 public class RatingListActivity extends AppCompatActivity {
 
@@ -36,8 +38,8 @@ public class RatingListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rating_list);
 
-        Button buttonBack = findViewById(R.id.back);
-        buttonBack.setOnClickListener(v -> finish()); // this goes back to the previous activity
+        ImageButton buttonBack = findViewById(R.id.back);
+        buttonBack.setOnClickListener(v -> finish());
 
 
         recyclerView = findViewById(R.id.recyclerViewTickets);
