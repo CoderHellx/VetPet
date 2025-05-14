@@ -45,31 +45,33 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 app:cornerRadius="8dp"
-                app:strokeColor="@color/white"
-                app:strokeWidth="3dp"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintVertical_bias="0.74"/>
+                app:layout_constraintHorizontal_bias="0.485"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.3"
+                app:strokeColor="@color/white"
+                app:strokeWidth="3dp" />
 
             <Button
                 android:id="@+id/viewAdoptionTicket"
                 android:layout_width="340dp"
                 android:layout_height="239dp"
+                android:layout_marginTop="24dp"
                 android:backgroundTint="@color/purpleLight"
                 android:text="@string/view_adoption_ticket"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 app:cornerRadius="8dp"
-                app:strokeColor="@color/white"
-                app:strokeWidth="3dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintVertical_bias="0.29"/>
+                app:layout_constraintHorizontal_bias="0.492"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/createAdoptionTicket"
+                app:strokeColor="@color/white"
+                app:strokeWidth="3dp" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
