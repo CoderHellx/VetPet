@@ -1,8 +1,9 @@
 package com.example.project;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
+import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -10,92 +11,203 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ChangeEmailActivity extends AppCompatActivity {
 
-    EditText currentemailedittext,newemailedittext,confirmNewemailedittext;
-    Button button;
-    DocumentReference currentuser;
-    ImageButton returnbutton;
-    String currentuserId, email;
-    FirebaseAuth mAuth;
+    private static final String TAG = "ChangeEmailActivity";
+    private EditText currentEmailEditText, passwordEditText, newEmailEditText, confirmNewEmailEditText;
+    private Button changeEmailButton;
+    private ImageButton returnButton;
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_email);
 
-        currentemailedittext = findViewById(R.id.currentemailedittext);
-        newemailedittext = findViewById(R.id.newemailedittext);
-        confirmNewemailedittext = findViewById(R.id.confirmnewemailedittext);
-        button = findViewById(R.id.changeemailButton);
-        returnbutton = findViewById(R.id.back);
+        currentEmailEditText = findViewById(R.id.currentemailedittext);
+        passwordEditText = findViewById(R.id.passwordedittext);
+        newEmailEditText = findViewById(R.id.newemailedittext);
+        confirmNewEmailEditText = findViewById(R.id.confirmnewemailedittext);
+        changeEmailButton = findViewById(R.id.changeemailButton);
+        returnButton = findViewById(R.id.back);
 
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         FirebaseUser user = mAuth.getCurrentUser();
-        currentuserId = user.getUid();
 
-        currentuser = FirebaseFirestore.getInstance().collection("users").document(
-                currentuserId);
-
-        returnbutton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-        currentuser.get().addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        email = documentSnapshot.getString("email");
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("Firestore", "User data fetch failed: " + e.getMessage());
-                });
-
-        button.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                if (email.equals(currentemailedittext.getText().toString().trim())){
-                    if (newemailedittext.getText().toString().trim().equals(confirmNewemailedittext.getText().toString().trim())){
-                        if(newemailedittext.getText().toString().trim().length()==0){
-                            Toast.makeText(getApplicationContext(), "Email cannot be empty", Toast.LENGTH_SHORT).show();
-                        }
-                        else {
-                            verifyemail();
-                            finish();
-                        }
-                    }
-                    else{
-                        Toast.makeText(getApplicationContext(), "New email and confirmation do not match.", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                else{
-                    Toast.makeText(getApplicationContext(), "Current email is incorrect.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        returnButton.setOnClickListener(v -> finish());
+        changeEmailButton.setOnClickListener(v -> validateAndSendVerification());
     }
 
-    private void verifyemail() {
+    private void validateAndSendVerification() {
         FirebaseUser user = mAuth.getCurrentUser();
-        user.sendEmailVerification()
-                .addOnCompleteListener(this, verifyTask -> {
-                    if (verifyTask.isSuccessful()) {
-                        Toast.makeText(this,
-                                "Verification email has been sent: " + user.getEmail(),
-                                Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(this,
-                                "Verification email could not be sent: " +
-                                        verifyTask.getException().getMessage(),
-                                Toast.LENGTH_LONG).show();
+        if (user == null) {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String currentEmail = currentEmailEditText.getText().toString().trim();
+        String password = passwordEditText.getText().toString().trim();
+        String newEmail = newEmailEditText.getText().toString().trim();
+        String confirmNewEmail = confirmNewEmailEditText.getText().toString().trim();
+
+        if (TextUtils.isEmpty(password)) {
+            passwordEditText.setError("Password is required");
+            passwordEditText.requestFocus();
+            return;
+        }
+
+        if (TextUtils.isEmpty(newEmail)) {
+            newEmailEditText.setError("New email is required");
+            newEmailEditText.requestFocus();
+            return;
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(newEmail).matches()) {
+            newEmailEditText.setError("Please enter a valid email address");
+            newEmailEditText.requestFocus();
+            return;
+        }
+
+        if (TextUtils.isEmpty(confirmNewEmail)) {
+            confirmNewEmailEditText.setError("Please confirm your new email");
+            confirmNewEmailEditText.requestFocus();
+            return;
+        }
+
+        if (!newEmail.equals(confirmNewEmail)) {
+            confirmNewEmailEditText.setError("New email and confirmation do not match");
+            confirmNewEmailEditText.requestFocus();
+            return;
+        }
+
+        if (newEmail.equals(currentEmail)) {
+            newEmailEditText.setError("New email must be different from current email");
+            newEmailEditText.requestFocus();
+            return;
+        }
+
+        AuthCredential credential = EmailAuthProvider.getCredential(currentEmail, password);
+
+        user.reauthenticate(credential)
+                .addOnSuccessListener(aVoid -> {
+                    sendVerificationAndUpdateEmail(user, newEmail);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Authentication failed", e);
+                    Toast.makeText(ChangeEmailActivity.this,
+                            "Authentication failed. Please check your password.",
+                            Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void sendVerificationAndUpdateEmail(FirebaseUser user, String newEmail) {
+        Log.d(TAG, "Attempting to send verification email to: " + newEmail);
+
+        String verificationCode = generateVerificationCode();
+
+        user.verifyBeforeUpdateEmail(newEmail)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "Firebase verification email sent successfully");
+
+                    savePendingEmailUpdate(user.getUid(), newEmail, verificationCode, true);
+
+                    Toast.makeText(ChangeEmailActivity.this,
+                            "Verification email sent to " + newEmail + ". Please check your inbox (including spam folder) and follow the link to verify.",
+                            Toast.LENGTH_LONG).show();
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Firebase verification email failed", e);
+
+                    // If Firebase verification fails, try custom verification logic
+                    handleCustomVerification(user, newEmail, verificationCode);
+                });
+    }
+
+    private void handleCustomVerification(FirebaseUser user, String newEmail, String verificationCode) {
+        savePendingEmailUpdate(user.getUid(), newEmail, verificationCode, false);
+
+        Toast.makeText(ChangeEmailActivity.this,
+                "Firebase verification failed. Using backup method. Please check your app for verification instructions.",
+                Toast.LENGTH_LONG).show();
+        Log.d(TAG, "Custom verification code for " + newEmail + ": " + verificationCode);
+        Toast.makeText(ChangeEmailActivity.this,
+                "DEBUG: Verification code: " + verificationCode,
+                Toast.LENGTH_LONG).show();
+    }
+
+    private String generateVerificationCode() {
+        return String.format("%06d", (int)(Math.random() * 1000000));
+    }
+
+    private void savePendingEmailUpdate(String userId, String newEmail, String verificationCode, boolean usingFirebaseMethod) {
+        DocumentReference userRef = db.collection("users").document(userId);
+
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("pendingEmail", newEmail);
+        updates.put("verificationCode", verificationCode);
+        updates.put("verificationTimestamp", System.currentTimeMillis());
+        updates.put("usingFirebaseVerification", usingFirebaseMethod);
+
+        userRef.update(updates)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "Pending email information saved to Firestore");
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to save pending email status", e);
+                    Toast.makeText(ChangeEmailActivity.this,
+                            "Note: Failed to save pending email status: " + e.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                });
+    }
+
+    public static void completeEmailUpdate(String userId, String newEmail, String enteredCode) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user == null) {
+            Log.e(TAG, "User not authenticated when trying to complete email update");
+            return;
+        }
+
+        db.collection("users").document(userId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String storedCode = documentSnapshot.getString("verificationCode");
+                        String pendingEmail = documentSnapshot.getString("pendingEmail");
+
+                        if (storedCode != null && storedCode.equals(enteredCode) &&
+                                pendingEmail != null && pendingEmail.equals(newEmail)) {
+
+                            user.updateEmail(newEmail)
+                                    .addOnSuccessListener(aVoid -> {
+                                        Map<String, Object> updates = new HashMap<>();
+                                        updates.put("pendingEmail", null);
+                                        updates.put("verificationCode", null);
+                                        updates.put("verificationTimestamp", null);
+                                        updates.put("email", newEmail);
+
+                                        db.collection("users").document(userId).update(updates);
+
+                                        Log.d(TAG, "Email successfully updated to: " + newEmail);
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.e(TAG, "Failed to update email after verification", e);
+                                    });
+                        }
                     }
                 });
     }

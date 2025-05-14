@@ -11,6 +11,8 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ChangePasswordActivity extends AppCompatActivity {
 
@@ -18,6 +20,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     private Button changePasswordButton;
     private ImageButton returnButton;
     private FirebaseAuth mAuth;
+    String currentuserid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,10 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
     private void changePassword() {
         FirebaseUser user = mAuth.getCurrentUser();
+        currentuserid = user.getUid();
+        DocumentReference currentuser = FirebaseFirestore.getInstance().collection("users").document(
+                currentuserid);
+
         if (user == null) {
             Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
             return;
@@ -86,6 +93,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                             .addOnSuccessListener(aVoid1 -> {
                                 Toast.makeText(ChangePasswordActivity.this,
                                         "Your password has been updated", Toast.LENGTH_SHORT).show();
+                                currentuser.update("password", newPassword);
                                 finish();
                             })
                             .addOnFailureListener(e -> {

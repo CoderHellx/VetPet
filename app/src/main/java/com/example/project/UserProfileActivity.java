@@ -194,20 +194,18 @@ public class UserProfileActivity extends AppCompatActivity {
                 warning.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (user != null) {
-                            user.delete()
-                                    .addOnCompleteListener(task -> {
-                                        if (task.isSuccessful()) {
-                                            Toast.makeText(getApplicationContext(), "Your profile has been deleted", Toast.LENGTH_SHORT).show();
-                                            currentuser.delete();
-                                            Intent i = new Intent();
-                                            i.setClass(getApplicationContext(), MainActivity.class);
-                                            startActivity(i);
-                                        } else {
-                                            Log.e("DeleteUser", "Auth deletion failed: " + task.getException().getMessage());
-                                        }
-                                    });
-                        }
+                        user.delete()
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(getApplicationContext(), "Your profile has been deleted", Toast.LENGTH_SHORT).show();
+                                        currentuser.delete();
+                                        Intent i = new Intent();
+                                        i.setClass(getApplicationContext(), MainActivity.class);
+                                        startActivity(i);
+                                    } else {
+                                        Log.e("DeleteUser", "Auth deletion failed: " + task.getException().getMessage());
+                                    }
+                                });
                     }
                 });
                 warning.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
