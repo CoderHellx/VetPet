@@ -55,21 +55,20 @@
 
     <ImageButton
         android:id="@+id/notification"
-        android:src="@drawable/baseline_circle_notifications_24"
-        android:scaleType="centerCrop"
-        android:adjustViewBounds="true"
-        android:tintMode="src_in"
         android:layout_width="55dp"
         android:layout_height="55dp"
-        android:layout_marginStart="320dp"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="30dp"
         android:backgroundTint="@color/pinkLight"
+        android:src="@drawable/baseline_circle_notifications_24"
         android:contentDescription="notification"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        app:tint="@color/white"
         app:strokeColor="@color/white"
         app:strokeWidth="3dp"
-        app:tint="@color/white" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0" />
 
     <TextView
         android:id="@+id/Pets"
