@@ -2,6 +2,10 @@ package com.example.project;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
@@ -380,7 +384,7 @@ public class FirebaseDatabaseManager {
     }
 
 
-    public Task<Void> setTicket(String applyId, boolean isApprove, String userId) {
+    public Task<Void> setTicket(String applyId, boolean isApprove, String userId, String auid) {
         TaskCompletionSource<Void> taskSource = new TaskCompletionSource<>();
 
         db.collection("applications")
@@ -391,8 +395,7 @@ public class FirebaseDatabaseManager {
                         DocumentSnapshot doc = queryDocumentSnapshots.getDocuments().get(0);
                         String ticketId = doc.getString("ticketId");
                         String type = doc.getString("type");
-
-                        Log.e("asd", doc.toString());
+                        String applicantId = doc.getString("applicantId");
 
                         HashMap<String, Object> data = new HashMap<>();
                         data.put("isApproved", isApprove);
@@ -407,15 +410,35 @@ public class FirebaseDatabaseManager {
 
                         if (type.equalsIgnoreCase("adoption")) {
                             if (isApprove) {
-                                data.put("adoptionUserId", userId);
+                                data.put("adoptionUserId", applicantId);
                             }
                             collectionPath = "tickets";
                         } else {
                             if (isApprove) {
-                                data.put("caregivingUserId", userId);
+                                data.put("caregivingUserId", applicantId);
                             }
                             collectionPath = "caregiving_tickets";
                         }
+
+                        db.collection(collectionPath).document(ticketId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshotA) {
+                                DocumentSnapshot docA = documentSnapshotA;
+
+                                String petId = docA.getString("petId");
+
+                                HashMap<String, Object> data = new HashMap<>();
+
+                                data.put("ownerId", applicantId);
+
+                                db.collection("pets").document(petId).set(data, SetOptions.merge()).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.e("asd", e.getMessage());
+                                    }
+                                });
+                            }
+                        });
 
                         db.collection(collectionPath)
                                 .document(ticketId)

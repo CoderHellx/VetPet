@@ -33,31 +33,56 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         app:srcCompat="@drawable/baseline_arrow_back_24"
+        android:contentDescription="Back"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
+    <TextView
+        android:id="@+id/emailLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="240dp" />
 
     <EditText
         android:id="@+id/emailEditText"
         android:layout_width="312dp"
         android:layout_height="61dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="260dp"
         android:background="@drawable/edittext_rounded_background"
-        android:hint=" Email"
+        android:hint="Enter email"
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/passwordLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Password"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/emailEditText"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="24dp" />
+
     <EditText
         android:id="@+id/passwordEditText"
         android:layout_width="320dp"
         android:layout_height="61dp"
         android:layout_marginTop="40dp"
-        android:hint="Password"
+        android:hint="Enter password"
+        android:background="@drawable/edittext_rounded_background"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.589"
@@ -90,7 +115,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/progressBar" />
+        app:layout_constraintTop_toBottomOf="@id/signInButton"/>
 
     <ProgressBar
         android:id="@+id/progressBar"
