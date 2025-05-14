@@ -61,7 +61,8 @@
         </activity>
         <activity
             android:name=".CreateTicket"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="stateHidden|adjustPan"/>
         <activity
             android:name=".AdoptionTickets"
             android:exported="false" />
@@ -76,7 +77,8 @@
             android:exported="false" />
         <activity
             android:name=".CreateCaregivingTicket"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="stateHidden|adjustPan"/>
         <activity
             android:name=".ChangePasswordActivity"
             android:exported="false" />
