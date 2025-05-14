@@ -69,15 +69,13 @@
                 android:hint="Birthday"
                 android:inputType="text" />
 
-            <EditText
+            <Spinner
                 android:id="@+id/inputGender"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_weight="1"
-                android:backgroundTint="#CCCCCC"
-                android:hint="Sex"
-                android:inputType="text" />
+                android:layout_marginTop="12dp"
+                android:backgroundTint="#CCCCCC" />
+
         </LinearLayout>
 
         <!-- Info -->

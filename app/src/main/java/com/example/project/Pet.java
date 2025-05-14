@@ -10,13 +10,13 @@ public class Pet implements Serializable {
     private String birthday;
     private String gender;
     private String additionalInfo;
-    private String photoUrl;
+    private String ImageUrl;
     private int age;
 
     public Pet() {
     } // Required by Firebase
     public Pet(String id, String ownerId, String name, String type, String birthday,
-               String gender, String additionalInfo, String photoUrl) {
+               String gender, String additionalInfo, String ImageUrl) {
         this.id = id;
         this.ownerId = ownerId;
         this.name = name;
@@ -24,39 +24,47 @@ public class Pet implements Serializable {
         this.birthday = birthday;
         this.gender = gender;
         this.additionalInfo = additionalInfo;
-        this.photoUrl = photoUrl;
+        this.ImageUrl = ImageUrl;
     }
 
     // Getters and Setters
     public String getId() {
+
         return id;
     }
 
     public void setId(String id) {
+
         this.id = id;
     }
 
     public String getOwnerId() {
+
         return ownerId;
     }
 
     public void setOwnerId(String ownerId) {
+
         this.ownerId = ownerId;
     }
 
     public String getName() {
+
         return name;
     }
 
     public void setName(String name) {
+
         this.name = name;
     }
 
     public String getSpecies() {
+
         return species;
     }
 
     public void setSpecies(String species) {
+
         this.species = species;
     }
 
@@ -85,11 +93,11 @@ public class Pet implements Serializable {
     }
 
     public String getImageUrl() {
-        return photoUrl;
+        return ImageUrl;
     }
 
-    public void setImageUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
+    public void setImageUrl(String ImageUrl) {
+        this.ImageUrl = ImageUrl;
     }
 
     public int getAge(){
