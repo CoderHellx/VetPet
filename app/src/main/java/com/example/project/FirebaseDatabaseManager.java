@@ -451,26 +451,28 @@ public class FirebaseDatabaseManager {
                             }
                             collectionPath = "caregiving_tickets";
                         }
+                        if(type.equalsIgnoreCase("adoption")){
+                            db.collection(collectionPath).document(ticketId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshotA) {
+                                    DocumentSnapshot docA = documentSnapshotA;
 
-                        db.collection(collectionPath).document(ticketId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshotA) {
-                                DocumentSnapshot docA = documentSnapshotA;
+                                    String petId = docA.getString("petId");
 
-                                String petId = docA.getString("petId");
+                                    HashMap<String, Object> data = new HashMap<>();
 
-                                HashMap<String, Object> data = new HashMap<>();
+                                    data.put("ownerId", applicantId);
 
-                                data.put("ownerId", applicantId);
+                                    db.collection("pets").document(petId).set(data, SetOptions.merge()).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.e("asd", e.getMessage());
+                                        }
+                                    });
+                                }
+                            });
+                        }
 
-                                db.collection("pets").document(petId).set(data, SetOptions.merge()).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.e("asd", e.getMessage());
-                                    }
-                                });
-                            }
-                        });
 
                         db.collection(collectionPath)
                                 .document(ticketId)
