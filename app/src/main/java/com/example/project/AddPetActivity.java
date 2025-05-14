@@ -1,6 +1,7 @@
 package com.example.project;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ public class AddPetActivity extends AppCompatActivity {
     private Spinner inputGender, inputType;
     private Button addButton, cancelButton;
     private Uri selectedImageUri;
+    private ProgressDialog progressDialog;
 
     private FirebaseFirestore db;
     private FirebaseStorage storage;
@@ -34,6 +36,10 @@ public class AddPetActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_pet);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Adding pet...");
+        progressDialog.setCancelable(false);
+
 
         // Link UI
         petImageView = findViewById(R.id.imagePet);
@@ -97,6 +103,8 @@ public class AddPetActivity extends AppCompatActivity {
 
             int currentYear = Calendar.getInstance().get(Calendar.YEAR);
             int age = currentYear - birthYear;
+
+            progressDialog.show();
 
             uploadImageAndSavePet(name, birthday, info, age);
         });
