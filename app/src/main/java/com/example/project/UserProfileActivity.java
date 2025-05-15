@@ -127,7 +127,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 Double rank = document.getDouble("averageRating");
 
                 nameSurnameText.setText(name + " " + surname);
-                rankText.setText(String.valueOf(rank));
+                rankText.setText(String.format("%.1f", rank));
                 currentUserDoc.update("email", user.getEmail());
 
                 nameEditText.setText(name);

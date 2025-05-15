@@ -16,6 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -91,16 +92,27 @@ public class AddPetActivity extends AppCompatActivity {
                 return;
             }
 
-            // Simple age calc
-            int birthYear;
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            sdf.setLenient(false);
+            java.util.Date birthDate;
+
             try {
-                String[] parts = birthday.split("/");
-                birthYear = Integer.parseInt(parts[2]);
+                birthDate = sdf.parse(birthday);
+                java.util.Date today = Calendar.getInstance().getTime();
+
+                if (birthDate.after(today)) {
+                    Toast.makeText(this, "Birthday cannot be in the future.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
             } catch (Exception e) {
                 Toast.makeText(this, "Birthday must be in format dd/MM/yyyy.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
+            // Calculate age
+            Calendar birthCal = Calendar.getInstance();
+            birthCal.setTime(birthDate);
+            int birthYear = birthCal.get(Calendar.YEAR);
             int currentYear = Calendar.getInstance().get(Calendar.YEAR);
             int age = currentYear - birthYear;
 
@@ -108,6 +120,7 @@ public class AddPetActivity extends AppCompatActivity {
 
             uploadImageAndSavePet(name, birthday, info, age);
         });
+
     }
 
     private void uploadImageAndSavePet(String name, String birthday, String info, int age) {
