@@ -69,7 +69,8 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:id="@+id/passwordedittext"
-        android:layout_below="@id/password" />
+        android:layout_below="@id/password"
+        android:inputType="textPassword"/>
 
     <TextView
         android:layout_width="wrap_content"
