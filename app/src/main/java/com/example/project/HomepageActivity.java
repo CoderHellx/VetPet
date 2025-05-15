@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -81,6 +82,8 @@ public class HomepageActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         //fetchPets(currentUserId);
+        DocumentReference currentUserDoc = FirebaseFirestore.getInstance().collection("users").document(currentUserId);
+        currentUserDoc.update("email", FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
         findViewById(R.id.adoption).setOnClickListener(new View.OnClickListener() {
             @Override
