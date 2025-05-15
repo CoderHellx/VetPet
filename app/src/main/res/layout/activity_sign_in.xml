@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,11 +8,25 @@
     android:background="@color/customPink"
     tools:context=".SignInActivity">
 
+    <!-- 0. BACK BUTTON (Top-Start) -->
+    <ImageButton
+        android:id="@+id/back"
+        android:layout_width="61dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/pinkLight"
+        app:srcCompat="@drawable/baseline_arrow_back_24"
+        android:contentDescription="Back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- 1. PROFILE -->
     <ImageButton
         android:id="@+id/profile"
         android:layout_width="184dp"
-        android:layout_height="158dp"
-        android:layout_marginTop="48dp"
+        android:layout_height="180dp"
+        android:layout_marginTop="60dp"
         android:adjustViewBounds="true"
         android:backgroundTint="@color/pinkLight"
         android:contentDescription="profile settings"
@@ -19,25 +34,12 @@
         android:src="@drawable/user"
         android:tintMode="src_in"
         app:cornerRadius="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:tint="@color/white" />
 
-    <ImageButton
-        android:id="@+id/back"
-        android:layout_width="70dp"
-        android:layout_height="50dp"
-        android:backgroundTint="@color/pinkLight"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        app:srcCompat="@drawable/baseline_arrow_back_24"
-        android:contentDescription="Back"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
+    <!-- 2. EMAIL LABEL -->
     <TextView
         android:id="@+id/emailLabel"
         android:layout_width="wrap_content"
@@ -45,25 +47,27 @@
         android:text="Email"
         android:textColor="@android:color/black"
         android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="240dp" />
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="32dp"
+        app:layout_constraintTop_toBottomOf="@id/profile"
+        app:layout_constraintStart_toStartOf="parent" />
 
+    <!-- 3. EMAIL EDITTEXT -->
     <EditText
         android:id="@+id/emailEditText"
-        android:layout_width="312dp"
+        android:layout_width="0dp"
         android:layout_height="61dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="260dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         android:background="@drawable/edittext_rounded_background"
         android:hint="Enter email"
         android:inputType="textEmailAddress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintTop_toBottomOf="@id/emailLabel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- 4. PASSWORD LABEL -->
     <TextView
         android:id="@+id/passwordLabel"
         android:layout_width="wrap_content"
@@ -71,61 +75,66 @@
         android:text="Password"
         android:textColor="@android:color/black"
         android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="32dp"
         app:layout_constraintTop_toBottomOf="@id/emailEditText"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="24dp" />
+        app:layout_constraintStart_toStartOf="parent" />
 
+    <!-- 5. PASSWORD EDITTEXT -->
     <EditText
         android:id="@+id/passwordEditText"
-        android:layout_width="320dp"
+        android:layout_width="0dp"
         android:layout_height="61dp"
-        android:layout_marginTop="40dp"
-        android:hint="Enter password"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         android:background="@drawable/edittext_rounded_background"
+        android:hint="Enter password"
         android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.589"
+        app:layout_constraintTop_toBottomOf="@id/passwordLabel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/emailEditText" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- 6. SIGN IN BUTTON -->
     <Button
         android:id="@+id/signInButton"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="128dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
         android:backgroundTint="@color/pinkLight"
         android:text="Sign In"
+        app:cornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/passwordEditText" />
+        app:layout_constraintTop_toBottomOf="@id/passwordEditText"
+        app:strokeColor="@color/white"
+        app:strokeWidth="3dp" />
 
+    <!-- FORGOT PASSWORD -->
     <TextView
         android:id="@+id/forgotPasswordText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="172dp"
-        android:backgroundTint="@color/black"
+        android:layout_marginTop="16dp"
         android:text="Forgot Password?"
         android:textColor="@color/black"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintTop_toBottomOf="@id/signInButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/signInButton"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
+    <!-- PROGRESS BAR -->
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/signInButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/signInButton" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
