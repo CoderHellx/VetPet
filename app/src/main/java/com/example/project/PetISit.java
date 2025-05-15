@@ -1,11 +1,13 @@
 package com.example.project;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 
@@ -86,13 +89,14 @@ public class PetISit extends AppCompatActivity {
         @SuppressLint("SetTextI18n")
         @Override
         public void onBindViewHolder(@NonNull PetsViewHolder holder, int position) {
+
             Map<String, Object> petData = petsArray.get(position);
 
             String petName = (String) petData.get("petName");
             String petType = (String) petData.get("petGender");
-
+            String ownerId = (String) petData.get("ownerId");
             String petImageUrl = (String) petData.get("petImageUrl");
-
+            String petId = (String) petData.get("petId");
             String endingDate = (String) petData.get("endingDate");
             String endingTimeHour = (String) petData.get("endingTimeHour");
             String endingTimeMinute = (String) petData.get("endingTimeMinute");
@@ -112,6 +116,15 @@ public class PetISit extends AppCompatActivity {
                     .placeholder(R.drawable.circle_shape)
                     .circleCrop()
                     .into(holder.petImage);
+            holder.ticket.setOnClickListener(view -> {
+                db.fetchPetById(petId).addOnSuccessListener(pet -> {
+                    Intent i = new Intent(getApplicationContext(), PetDetailActivity.class);
+                    i.putExtra("pet", pet); // Burada `pet` artık yukarıda gelen veri
+                    startActivity(i);
+                }).addOnFailureListener(e -> {
+                    Toast.makeText(getApplicationContext(), "Pet bilgisi alınamadı", Toast.LENGTH_SHORT).show();
+                });
+            });
         }
 
         @Override
@@ -123,6 +136,7 @@ public class PetISit extends AppCompatActivity {
 
             TextView petName, sex, sd, ed, city;
             ImageView petImage;
+            LinearLayout ticket;
 
             public PetsViewHolder(@NonNull View itemView) {
                 super(itemView);
@@ -133,7 +147,7 @@ public class PetISit extends AppCompatActivity {
                 city = itemView.findViewById(R.id.city);
 
                 city.setVisibility(View.GONE);
-
+                ticket = itemView.findViewById(R.id.ticket);
                 petImage = itemView.findViewById(R.id.pet_image);
             }
         }

@@ -1,7 +1,6 @@
 package com.example.project;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -564,5 +563,35 @@ public class FirebaseDatabaseManager {
                 .addOnFailureListener(e -> taskSource.setResult(null));
 
         return taskSource.getTask();
+
     }
+    public Task<Pet> fetchPetById(String petId) {
+        TaskCompletionSource<Pet> taskSource = new TaskCompletionSource<>();
+
+        db.collection("pets").document(petId).get()
+                .addOnSuccessListener(document -> {
+                    if (document.exists()) {
+                        // Firestore'dan gelen verileri al
+                        String name = document.getString("name");
+                        String id = document.getString("id");
+                        String gender = document.getString("gender");
+                        String imageUrl = document.getString("imageUrl");
+                        String birthday = document.getString("birthday");
+                        String ownerId = document.getString("ownerId");
+                        String type = document.getString("type");
+                        String additionalInfo = document.getString("ownerId");
+
+                        Pet pet = new Pet(id,ownerId, name,type, type, gender, additionalInfo,
+                                imageUrl);
+
+                        taskSource.setResult(pet);
+                    } else {
+                        taskSource.setException(new Exception("Pet not found with id: " + petId));
+                    }
+                })
+                .addOnFailureListener(taskSource::setException);
+
+        return taskSource.getTask();
+    }
+
 }
