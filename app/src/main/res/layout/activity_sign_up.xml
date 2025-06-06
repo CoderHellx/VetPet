@@ -51,15 +51,14 @@
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="148dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/edittext_rounded_background"
-        android:inputType="textPersonName"
-        android:padding="16dp"
         android:hint="Enter name"
+        android:inputType="textPersonName"
+        android:padding="12dp"
+        app:layout_constraintBottom_toBottomOf="@+id/emailLabel"
         app:layout_constraintEnd_toStartOf="@+id/surnameEditText"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/signupTitle"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.45" />
 
@@ -78,15 +77,16 @@
         android:id="@+id/surnameEditText"
         android:layout_width="0dp"
         android:layout_height="48dp"
-        android:layout_marginEnd="32dp"
         android:layout_marginStart="8dp"
-        android:hint="Enter surname"
+        android:layout_marginEnd="32dp"
         android:background="@drawable/edittext_rounded_background"
+        android:hint="Enter surname"
         android:inputType="textPersonName"
-        android:padding="16dp"
+        android:padding="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/emailEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/nameEditText"
-        app:layout_constraintTop_toTopOf="@+id/nameEditText"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.45" />
 
     <TextView
@@ -118,16 +118,16 @@
         android:id="@+id/countrySpinner"
         android:layout_width="0dp"
         android:layout_height="48dp"
-        android:padding="12dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="72dp"
         android:layout_marginEnd="8dp"
-        android:popupBackground="@android:color/white"
         android:background="@drawable/edittext_rounded_background"
+        android:padding="12dp"
+        android:popupBackground="@android:color/white"
         android:prompt="@string/select_country"
+        app:layout_constraintBottom_toBottomOf="@+id/emailLabel"
         app:layout_constraintEnd_toStartOf="@id/citySpinner"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/surnameEditText"
+        app:layout_constraintTop_toBottomOf="@+id/nameEditText"
         app:layout_constraintWidth_percent="0.45" />
 
 
@@ -135,16 +135,16 @@
         android:id="@+id/citySpinner"
         android:layout_width="0dp"
         android:layout_height="48dp"
-        android:padding="12dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="72dp"
         android:layout_marginEnd="32dp"
-        android:popupBackground="@android:color/white"
         android:background="@drawable/edittext_rounded_background"
+        android:padding="12dp"
+        android:popupBackground="@android:color/white"
         android:prompt="@string/select_city"
+        app:layout_constraintBottom_toTopOf="@+id/emailEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/countrySpinner"
-        app:layout_constraintTop_toBottomOf="@id/surnameEditText"
+        app:layout_constraintTop_toBottomOf="@+id/surnameEditText"
         app:layout_constraintWidth_percent="0.45" />
 
     <TextView
@@ -160,15 +160,17 @@
 
     <EditText
         android:id="@+id/emailEditText"
-        android:layout_width="348dp"
+        android:layout_width="0dp"
         android:layout_height="48dp"
-        android:layout_marginStart="32dp"
         android:layout_marginTop="376dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginEnd="28dp"
         android:hint="Enter email"
         android:background="@drawable/edittext_rounded_background"
         android:inputType="textEmailAddress"
         android:padding="12dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf = "parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintTop_toBottomOf="@id/countrySpinner"
         />
@@ -186,16 +188,19 @@
 
     <EditText
         android:id="@+id/passwordEditText"
-        android:layout_width="348dp"
+        android:layout_width="0dp"
         android:layout_height="48dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="484dp"
-        android:hint="Enter password"
         android:background="@drawable/edittext_rounded_background"
+        android:hint="Enter password"
         android:inputType="textPassword"
-        android:padding="16dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginEnd="28dp"
+        android:padding="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/signUpButton"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/emailEditText"
+        app:layout_constraintVertical_bias="0.571" />
 
     <Button
         android:id="@+id/signUpButton"
